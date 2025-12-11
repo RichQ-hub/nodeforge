@@ -7,7 +7,6 @@ export default function VisualiserPage() {
       {/* Left Sidebar */}
       <CanvasSidebar />
 
-
       {/* Canvas */}
       <Canvas height='100%' width='100%' />
     </main>

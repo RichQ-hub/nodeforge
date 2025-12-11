@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <body className='antialiased box-border'>
         <Navbar />
-        <div className='mt-14 min-h-[calc(100vh-56px)] bg-white text-black'>
+        <div className='mt-14 min-h-[calc(100vh-56px)] text-black'>
           {children}
         </div>
       </body>
