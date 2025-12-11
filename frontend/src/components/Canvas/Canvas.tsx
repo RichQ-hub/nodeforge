@@ -1,6 +1,6 @@
 'use client';
 
-import { Circle, Rect, Svg, SVG } from '@svgdotjs/svg.js';
+import { Circle, Rect } from '@svgdotjs/svg.js';
 import { mat3, vec2 } from 'gl-matrix';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -11,13 +11,7 @@ type Point = {
 
 const ORIGIN = Object.freeze({ x: 0, y: 0 });
 
-const Canvas = ({
-  height,
-  width
-}: {
-  height: string;
-  width: string;
-}) => {
+const Canvas = () => {
   const canvasRef = useRef<SVGSVGElement | null>(null);
   const isMouseDown = useRef<boolean>(false);
   const [mousePos, setMousePos] = useState<Point>(ORIGIN);
@@ -25,7 +19,6 @@ const Canvas = ({
 
   // Origin in viewport pixel coordinates.
   const [canvasOrigin, setCanvasOrigin] = useState<vec2>(vec2.fromValues(ORIGIN.x, ORIGIN.y));
-  const [canvasTopLeft, setCanvasTopLeft] = useState<vec2>(vec2.fromValues(ORIGIN.x, ORIGIN.y));
   const [canvasDimensions, setCanvasDimensions] = useState({
     height: 0,
     width: 0
@@ -50,17 +43,41 @@ const Canvas = ({
   /**
    * Sets the viewport coordinate of the top-left corner of the canvas.
    */
+  // useEffect(() => {
+  //   if (!canvasRef.current) {
+  //     return;
+  //   }
+  //   const canvasBoundingRect = canvasRef.current.getBoundingClientRect();
+  //   setCanvasOrigin(vec2.fromValues(canvasBoundingRect.left, canvasBoundingRect.top));
+
+  //   setCanvasDimensions({
+  //     height: canvasBoundingRect.height,
+  //     width: canvasBoundingRect.width
+  //   });
+  // }, []);
+
   useEffect(() => {
     if (!canvasRef.current) {
       return;
     }
-    const canvasBoundingRect = canvasRef.current.getBoundingClientRect();
-    setCanvasOrigin(vec2.fromValues(canvasBoundingRect.x, canvasBoundingRect.y));
+    
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        setCanvasDimensions({
+          width: entry.contentRect.width,
+          height: entry.contentRect.height,
+        });
 
-    setCanvasDimensions({
-      height: canvasBoundingRect.height,
-      width: canvasBoundingRect.width
+        const canvasBoundingRect = entry.target.getBoundingClientRect();
+        setCanvasOrigin(vec2.fromValues(canvasBoundingRect.left, canvasBoundingRect.top));
+      }
     });
+
+    observer.observe(canvasRef.current);
+
+    return () => {
+      observer.disconnect();
+    }
   }, []);
 
   /**
@@ -115,8 +132,6 @@ const Canvas = ({
 
       return newMatrix;
     });
-
-    setCanvasTopLeft(vec2.fromValues(transformMatrix[6], transformMatrix[7]));
   };
 
   const handleMouseUp = () => {
@@ -209,31 +224,28 @@ const Canvas = ({
       newMatrix[6] += viewportTopLeftChange[0];
       newMatrix[7] += viewportTopLeftChange[1];
 
-      setCanvasTopLeft(vec2.fromValues(newMatrix[6], newMatrix[7]));
-
       return newMatrix;
     });
   }, [canvasOrigin]);
 
   return (
-    <div className='relative h-full w-full'>
+    <div className='relative w-full h-full'>
       <svg
-        className='active:cursor-grabbing'
+        className='bg-nodeforge-canvas w-full h-full'
         id='visualiser-canvas'
         ref={canvasRef}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
         onWheel={handleZoom}
-        width={width}
-        height={height}
         viewBox={`${transformMatrix[6]} ${transformMatrix[7]} ${canvasDimensions.width / transformMatrix[0]} ${canvasDimensions.height / transformMatrix[4]}`}
       >
       </svg>
       <div className='absolute top-0 right-0'>
-        <p>Mouse Pos: {mousePos.x} {mousePos.y}</p>
-        <p>Canvas Origin: {canvasOrigin[0]} {canvasOrigin[1]}</p>
+        <p>Mouse Pos: [x: {mousePos.x}, y: {mousePos.y}]</p>
+        <p>Canvas Origin: [x: {canvasOrigin[0]}, y: {canvasOrigin[1]}]</p>
         <p>Scale: {transformMatrix[0]}</p>
+        <p>Dimensions: [w: {canvasDimensions.width}, h: {canvasDimensions.height}]</p>
       </div>
     </div>
   )
