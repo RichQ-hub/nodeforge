@@ -17,11 +17,13 @@
     height: 4px;
     width: 4px;
     padding: 0 0.2rem;
+    scrollbar-gutter: stable;
   }
 
   .scrollbar::-webkit-scrollbar-thumb {
     background-color: darkgrey;
     outline: 1px solid slategrey;
     border-radius: 100px;
+    scrollbar-gutter: stable;
   }
 }

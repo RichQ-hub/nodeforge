@@ -42,20 +42,83 @@ const CanvasSidebar = () => {
       </div>
 
       <PanelBox title='Actions'>
-        <p>nice</p>
-        <p>nice</p>
-        <p>nice</p>
-        <p>nice</p>
-        <p>nice</p>
-        <p>nice</p>
-        <p>nice</p>
-        <p>nice</p>
-        <p>nice</p>
-        <p>nice</p>
-        <p>nice</p>
-        <p>nice</p>
-        <p>nice</p>
-        <p>nice</p>
+        <div className='grid grid-cols-[max-content_1fr] gap-3 items-center auto-rows-max font-semibold text-md w-full'>
+          <label htmlFor='insertBST'>Insert</label>
+          <div className='flex'>
+            <input
+              className='w-full bg-[rgba(110,129,224,0.3)] border border-nodeforge-white-10 px-2 ml-auto outline-none font-normal'
+              type='number'
+              id='insertBST'
+              name='insertBST'
+              placeholder='value'
+            />
+            <button
+              type='button'
+              className='text-black bg-[#11CCFB] px-2 py-1 hover:cursor-pointer'
+            >Run</button>
+          </div>
+
+          <label htmlFor='insertBST'>Delete</label>
+          <div className='flex'>
+            <input
+              className='w-full block bg-[rgba(110,129,224,0.3)] border border-nodeforge-white-10 px-2 ml-auto outline-none font-normal'
+              type='number'
+              id='insertBST'
+              name='insertBST'
+              placeholder='value'
+            />
+            <button
+              type='button'
+              className='text-black bg-[#11CCFB] px-2 py-1 hover:cursor-pointer'
+            >Run</button>
+          </div>
+
+          <label htmlFor='insertBST'>Rotate Left</label>
+          <div className='flex'>
+            <input
+              className='w-full block bg-[rgba(110,129,224,0.3)] border border-nodeforge-white-10 px-2 ml-auto outline-none font-normal'
+              type='number'
+              id='insertBST'
+              name='insertBST'
+              placeholder='value'
+            />
+            <button
+              type='button'
+              className='text-black bg-[#11CCFB] px-2 py-1 hover:cursor-pointer'
+            >Run</button>
+          </div>
+
+          <label htmlFor='insertBST'>Rotate Right</label>
+          <div className='flex'>
+            <input
+              className='w-full block bg-[rgba(110,129,224,0.3)] border border-nodeforge-white-10 px-2 ml-auto outline-none font-normal'
+              type='number'
+              id='insertBST'
+              name='insertBST'
+              placeholder='value'
+            />
+            <button
+              type='button'
+              className='text-black bg-[#11CCFB] px-2 py-1 hover:cursor-pointer'
+            >Run</button>
+          </div>
+
+          <label htmlFor='insertBST'>Inorder Traversal</label>
+          <div className='flex'>
+            <button
+              type='button'
+              className='text-black bg-[#11CCFB] px-2 py-1 hover:cursor-pointer'
+            >Run</button>
+          </div>
+
+          <label htmlFor='insertBST'>Postorder Traversal</label>
+          <div className='flex'>
+            <button
+              type='button'
+              className='text-black bg-[#11CCFB] px-2 py-1 hover:cursor-pointer'
+            >Run</button>
+          </div>
+        </div>
       </PanelBox>
       <PanelBox title='Code Snippet'>
         <pre className={`${jetbrains.className} text-xs/loose`}>{sampleCodeSnippet}</pre>

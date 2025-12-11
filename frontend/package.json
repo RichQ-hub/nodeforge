@@ -13,7 +13,8 @@
     "gl-matrix": "^3.4.4",
     "next": "16.0.5",
     "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react-dom": "19.2.0",
+    "react-resizable-panels": "3.0.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
