@@ -1,0 +1,21 @@
+import { barlow } from '@/fonts';
+import React from 'react';
+
+const PanelBox = ({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) => {
+  return (
+    <div className={`${barlow.className} bg-nodeforge-box rounded-2xl border border-nodeforge-white-10 min-h-36 flex flex-col overflow-hidden`}>
+      <h2 className='text-nodeforge-subheading font-bold text-lg px-4 py-2 border-b border-b-nodeforge-white-10'>{title}</h2>
+      <div className='px-4 py-2 overflow-y-scroll scrollbar'>
+        {children}
+      </div>
+    </div>
+  )
+}
+
+export default PanelBox;

@@ -1,0 +1,27 @@
+@import "tailwindcss";
+/* @config "../../tailwind.config.ts"; */
+
+@theme {
+  --color-nodeforge-nav: #0E141B;
+  --color-nodeforge-brand: #FF5D07;
+  --color-nodeforge-canvas: #F1F2F7;
+  --color-nodeforge-panel: #1B1A1F;
+  --color-nodeforge-box: #23232D;
+  --color-nodeforge-subheading: #FFCC73;
+  --color-nodeforge-white-30: rgba(255, 255, 255, 0.3);
+  --color-nodeforge-white-10: rgba(255, 255, 255, 0.1);
+}
+
+@layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    height: 4px;
+    width: 4px;
+    padding: 0 0.2rem;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    outline: 1px solid slategrey;
+    border-radius: 100px;
+  }
+}
