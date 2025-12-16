@@ -1,0 +1,127 @@
+import ContentBox from '../ContentBox'
+
+import optionsIcon from '@/assets/options.svg';
+import codeIcon from '@/assets/code.svg';
+import { barlow, jetbrains } from '@/fonts';
+
+import listIcon from '@/assets/list.svg';
+import playIcon from '@/assets/play.svg';
+import Image from 'next/image';
+
+const sampleCodeSnippet0 = 
+`struct node *insert(struct node *node, int value) {
+  if (node == null)
+    return create_new_node(value);
+  if (value < node->value)
+    node->left = insert(node->left, value);
+  else if (value > node->value)
+    node->right = insert(node->right, value);
+  else if (value == node->value)
+    return node;
+
+  node->height = height(node);
+  int balance = height(node->left) - height(node->right);
+  if (balance > 1) {
+    if (value > node->left->value)
+      node->left = rotate_left(node->left);
+    return rotate_right(node);
+  } else if (balance < -1) {
+    if (value < node->right->value)
+      node->right = rotate_right(node->right);
+    return rotate_left(node);
+  } else {
+    return node;
+  }
+}
+}
+}
+}`
+
+const sampleCodeSnippet = 
+`struct node *insert(struct node *node, int value) {
+  if (node == null)
+    return create_new_node(value);
+  if (value < node->value)
+    node->left = insert(node->left, value);
+  else if (value > node->value)
+    node->right = insert(node->right, value);
+  else if (value == node->value)
+    return node;
+
+  node->height = height(node);
+  int balance = height(node->left) - height(node->right);
+  if (balance > 1) {
+    if (value > node->left->value)
+      node->left = rotate_left(node->left);
+    return rotate_right(node);
+  } else if (balance < -1) {
+}
+}
+mike
+yo
+miassss
+dumb
+ppook`
+
+const OperationsTab = () => {
+  return (
+    <div className='h-full overflow-y-auto scrollbar'>
+      {/* Select Algorithm Section */}
+      <div className={`${barlow.className} h-10 mb-6 flex`}>
+        {/* Select Algorithm Box*/}
+        <div className='grow flex items-center overflow-hidden bg-nodeforge-box-bg rounded-2xl border border-white/15'>
+          {/* Icon */}
+          <div className='p-2 bg-nodeforge-aqua w-10 rounded-br-2xl'>
+            <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M406.162286 94.061714l12.653714 65.316572a365.933714 365.933714 0 0 0-267.264 501.540571l-61.220571 25.892572a432.420571 432.420571 0 0 1 315.830857-592.749715z m-193.828572 757.028572l42.569143-51.2a364.105143 364.105143 0 0 0 233.764572 84.48c87.771429 0 170.642286-31.012571 236.251428-86.528l43.008 50.761143A430.665143 430.665143 0 0 1 488.594286 950.857143a430.665143 430.665143 0 0 1-276.260572-99.766857z m426.422857-666.331429a135.68 135.68 0 1 1 7.753143-68.754286 432.713143 432.713143 0 0 1 268.873143 332.8c1.462857 9.069714 2.706286 21.065143 3.803429 35.986286a31.451429 31.451429 0 0 1-31.451429 33.718857 34.889143 34.889143 0 0 1-34.816-32.329143 366.153143 366.153143 0 0 0-214.162286-301.348571z m-126.464 29.403429a78.555429 78.555429 0 1 0 0-157.037715 78.555429 78.555429 0 0 0 0 157.037715z m-320.658285 672.914285a135.68 135.68 0 1 1 0-271.286857 135.68 135.68 0 0 1 0 271.36z m0-57.051428a78.555429 78.555429 0 1 0 0-157.110857 78.555429 78.555429 0 0 0 0 157.110857z m640.731428 57.051428a135.68 135.68 0 1 1 0-271.286857 135.68 135.68 0 0 1 0 271.36z m0-57.051428a78.555429 78.555429 0 1 0 0-157.110857 78.555429 78.555429 0 0 0 0 157.110857z" fill="#000" /></svg>
+          </div>
+          {/* Title */}
+          <div className='px-3 py-2 flex items-center font-bold'>
+            <h2 className='text-nodeforge-aqua mr-2'>Action:</h2>
+            <p>Search</p>
+          </div>
+          <button className='p-2 w-10 ml-auto hover:bg-white/50 cursor-pointer'>
+            <Image className='' src={listIcon} alt='' />
+          </button>
+        </div>
+
+        {/* Play Algorithm Button */}
+        <button
+          className='ml-4 rounded-2xl border border-white/15 bg-nodeforge-brand py-2 px-3'
+          type='button'
+        >
+          <Image className='h-full w-full' src={playIcon} alt='' />
+        </button>
+      </div>
+
+      {/* Options Menu */}
+      <ContentBox title='Values' icon={optionsIcon}>
+        <div className='grid grid-cols-[minmax(100px,max-content)_1fr] gap-3 items-center auto-rows-max'>
+          <label htmlFor='insertBST'>Insert</label>
+          <input
+            className='w-full h-8 bg-[rgba(110,129,224,0.3)] border border-nodeforge-white-10 px-2 ml-auto outline-none font-normal'
+            type='number'
+            id='insertBST'
+            name='insertBST'
+            placeholder='value'
+          />
+
+          <label htmlFor='insertBST'>Delete</label>
+          <input
+            className='w-full h-8 bg-[rgba(110,129,224,0.3)] border border-nodeforge-white-10 px-2 ml-auto outline-none font-normal'
+            type='number'
+            id='insertBST'
+            name='insertBST'
+            placeholder='value'
+          />
+        </div>
+      </ContentBox>
+
+      {/* Code Snippet */}
+      <ContentBox title='Code Snippet' icon={codeIcon}>
+        <pre className={`${jetbrains.className} text-xs/loose overflow-x-scroll`}>{sampleCodeSnippet}</pre>
+      </ContentBox>
+    </div>
+  )
+}
+
+export default OperationsTab

@@ -1,12 +1,10 @@
-import Canvas from "@/components/Canvas";
-import CanvasSidebar from "@/components/CanvasInterface/CanvasSidebar";
-import Visualiser from "@/components/Visualiser";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import Visualiser2 from "@/components/Visualiser/Visualiser2";
 
 export default function VisualiserPage() {
   return (
     <main className='h-[calc(100vh-56px)]'>
-      <Visualiser />
+      <Visualiser2 />
+      {/* <Visualiser /> */}
     </main>
   );
 }

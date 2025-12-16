@@ -1,4 +1,4 @@
-import { squada } from '@/fonts';
+import { pixelify } from '@/fonts';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -7,7 +7,7 @@ import logoBanner from '@/assets/banner-bg.jpg';
 
 const Navbar = () => {
   return (
-    <nav className='pr-3 fixed top-0 left-0 right-0 h-14 flex items-center z-50 bg-nodeforge-nav border-b border-b-nodeforge-white-30'>
+    <nav className='pr-3 fixed top-0 left-0 right-0 h-14 flex items-center z-50 bg-nodeforge-nav'>
       {/* Logo Section */}
       <div
         className={`
@@ -17,7 +17,7 @@ const Navbar = () => {
         {/* Logo and title */}
         <Link
           href='/'
-          className={`${squada.className} flex items-center h-full text-2xl text-nodeforge-brand`}
+          className={`${pixelify.className} flex items-center h-full text-2xl text-nodeforge-brand`}
         >
           <Image src={logoImg} alt='NodeForge Logo' className='mx-6 mt-1' height={50}/>
           Node Forge

@@ -2,14 +2,15 @@ import {
   Squada_One,
   Monomaniac_One,
   Barlow_Semi_Condensed,
-  JetBrains_Mono
+  JetBrains_Mono,
+  Pixelify_Sans
 } from 'next/font/google';
 
 // Logo font.
-export const squada = Squada_One({
-  weight: ['400'],
+export const pixelify = Pixelify_Sans({
+  weight: ['700'],
   subsets: ['latin'],
-});
+})
 
 // Title font.
 export const monomaniac = Monomaniac_One({

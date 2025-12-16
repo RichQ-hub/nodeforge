@@ -39,6 +39,7 @@ const CanvasSidebar = () => {
       <div className='flex items-center'>
         <h1 className={`${monomaniac.className} mr-4 text-2xl`}>Binary Search Tree</h1>
         <Image src={bstIcon} alt=''/>
+        <div>NICE</div>
       </div>
 
       <PanelBox title='Actions'>

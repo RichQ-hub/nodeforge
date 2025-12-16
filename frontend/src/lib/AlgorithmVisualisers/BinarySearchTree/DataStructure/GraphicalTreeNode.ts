@@ -3,10 +3,10 @@ import { Circle, Line, Marker, NumberAlias, Text } from "@svgdotjs/svg.js";
 export interface SVGData {
   shape: Circle;
   text: Text;
-  leftChildLine: Line;
-  rightChildLine: Line;
-  leftChildArrow: Marker;
-  rightChildMarker: Marker;
+  // leftChildLine: Line;
+  // rightChildLine: Line;
+  // leftChildArrow: Marker;
+  // rightChildMarker: Marker;
 }
 
 export interface NodeCoordinates {
@@ -21,7 +21,7 @@ class GraphicalTreeNode {
   private _rightChild: GraphicalTreeNode | null;
   private _svgData: SVGData;
 
-  constructor(nodeCoordinates: NodeCoordinates, value: number, svgData: SVGData) {
+  public constructor(nodeCoordinates: NodeCoordinates, value: number, svgData: SVGData) {
     this._nodeCoordinates = nodeCoordinates;
     this._value = value;
     this._svgData = svgData;
@@ -33,7 +33,34 @@ class GraphicalTreeNode {
   // Methods
   // ==============================================================================
 
-  
+  public static createNode(value: number): GraphicalTreeNode {
+    const shape = new Circle().radius(30).attr({
+      fill: '#D6E7F9',
+      stroke: '#0285BD',
+      'stroke-width': 2,
+      opacity: 0,
+    });
+    const text = new Text()
+      .text(value.toString())
+      .font({
+        family: 'JetBrains Mono',
+        weight: 700,
+        size: 20
+      })
+      .attr({
+        fill: '#0285BD',
+        opacity: 0,
+      });
+
+    return new GraphicalTreeNode(
+      { x: 0, y: 0},
+      value,
+      {
+        shape,
+        text,
+      }
+    );
+  }
 
   // ==============================================================================
   // Getters and Setters.

@@ -7,6 +7,7 @@ import { jetbrains, monomaniac } from '@/fonts';
 
 import bstIcon from '@/assets/bst-icon.svg';
 import Canvas from '../Canvas';
+import TestRunner from '@/lib/AlgorithmVisualisers/TestRunner';
 
 const sampleCodeSnippet = 
 `struct node *insert(struct node *node, int value) {
@@ -37,6 +38,7 @@ const sampleCodeSnippet =
 }
 }`
 
+const testRunner = new TestRunner();
 
 const Visualiser = () => {
   return (
@@ -50,6 +52,12 @@ const Visualiser = () => {
         <div className='flex items-center'>
           <h1 className={`${monomaniac.className} mr-4 text-2xl`}>Binary Search Tree</h1>
           <Image src={bstIcon} alt=''/>
+          <button
+            onClick={() => testRunner.run()}
+            type='button'
+          >
+            Test
+          </button>
         </div>
 
         <PanelBox title='Actions'>

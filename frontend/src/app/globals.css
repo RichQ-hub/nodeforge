@@ -11,6 +11,15 @@
   --color-nodeforge-subheading: #FFCC73;
   --color-nodeforge-white-30: rgba(255, 255, 255, 0.3);
   --color-nodeforge-white-10: rgba(255, 255, 255, 0.1);
+
+  /* Revised Colors */
+  --color-nodeforge-dark-denim: #1B1A1F;
+  --color-nodeforge-light-denim: #23232D;
+  --color-nodeforge-box-bg: #101012;
+  --color-nodeforge-amber: #FFCC73;
+  --color-nodeforge-aqua: #11CCFB;
+  --color-nodeforge-fuchsia: #DE24FF;
+  --color-nodeforge-bone: #F1F2F7;
 }
 
 @layer utilities {
@@ -19,6 +28,8 @@
     width: 4px;
     padding: 0 0.2rem;
     scrollbar-gutter: stable;
+    padding-left: 10px;
+    margin-left: 10px;
   }
 
   .scrollbar::-webkit-scrollbar-thumb {
@@ -26,5 +37,7 @@
     outline: 1px solid slategrey;
     border-radius: 100px;
     scrollbar-gutter: stable;
+    padding-left: 10px;
+    margin-left: 10px;
   }
 }
