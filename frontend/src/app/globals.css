@@ -28,8 +28,6 @@
     width: 4px;
     padding: 0 0.2rem;
     scrollbar-gutter: stable;
-    padding-left: 10px;
-    margin-left: 10px;
   }
 
   .scrollbar::-webkit-scrollbar-thumb {
@@ -37,7 +35,5 @@
     outline: 1px solid slategrey;
     border-radius: 100px;
     scrollbar-gutter: stable;
-    padding-left: 10px;
-    margin-left: 10px;
   }
 }

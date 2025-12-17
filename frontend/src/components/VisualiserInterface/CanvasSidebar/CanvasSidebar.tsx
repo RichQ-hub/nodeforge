@@ -1,7 +1,6 @@
 import CanvasSidebarIcon from './CanvasSidebarIcon';
 
 import sidebarExpandIcon from '@/assets/sidebar-expand.svg';
-import sidebarCollapseIcon from '@/assets/sidebar-collapse.svg';
 import guideIcon from '@/assets/guide.svg';
 import darkModeIcon from '@/assets/dark-mode.svg';
 import React from 'react';
@@ -24,24 +23,17 @@ const CanvasSidebar = ({
   setOpenSidebar: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
   return (
-    <aside className='bg-nodeforge-light-denim w-14 h-full flex flex-col'>
+    <aside className='bg-nodeforge-light-denim w-14 h-full flex flex-col z-100'>
       {/* Toggle Sidebar Section */}
       <div
         className='h-16 flex flex-col justify-center'
       >
-        {openSidebar ? (
-          <CanvasSidebarIcon
-            src={sidebarCollapseIcon}
-            handleClick={() => setOpenSidebar(false)}
-            idx={0}
-          />
-        ) : (
-          <CanvasSidebarIcon
-            src={sidebarExpandIcon}
-            handleClick={() => setOpenSidebar(true)}
-            idx={0}
-          />
-        )}
+        <CanvasSidebarIcon
+          src={sidebarExpandIcon}
+          handleClick={() => setOpenSidebar(!openSidebar)}
+          idx={0}
+          flip={openSidebar}
+        />
       </div>
 
       {/* Canvas Tabs Section */}
