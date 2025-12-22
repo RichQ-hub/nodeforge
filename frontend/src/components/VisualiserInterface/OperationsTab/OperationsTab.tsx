@@ -2,11 +2,13 @@ import ContentBox from '../ContentBox'
 
 import optionsIcon from '@/assets/options.svg';
 import codeIcon from '@/assets/code.svg';
-import { barlow, jetbrains } from '@/fonts';
+import { barlow } from '@/lib/fonts';
 
 import listIcon from '@/assets/list.svg';
 import playIcon from '@/assets/play.svg';
 import Image from 'next/image';
+import VisualiserController from '@/lib/AlgorithmVisualisers/VisualiserController';
+import VisualiserContext from '@/context/VisualiserContext';
 
 const sampleCodeSnippet0 = 
 `struct node *insert(struct node *node, int value) {
@@ -32,9 +34,6 @@ const sampleCodeSnippet0 =
   } else {
     return node;
   }
-}
-}
-}
 }`
 
 const sampleCodeSnippet = 
@@ -63,9 +62,11 @@ miassss
 dumb
 ppook`
 
+const controller = new VisualiserController();
+
 const OperationsTab = () => {
   return (
-    <>
+    <VisualiserContext.Provider value={{ controller }}>
       {/* Select Algorithm Section */}
       <div className={`${barlow.className} h-10 mb-6 flex`}>
         {/* Select Algorithm Box*/}
@@ -88,6 +89,11 @@ const OperationsTab = () => {
         <button
           className='ml-4 rounded-3xl border border-white/15 bg-nodeforge-brand p-3 cursor-pointer'
           type='button'
+          onClick={() => {
+            controller.switchOperation('Insert');
+            controller.runOperation('Insert', 1);
+            console.log(controller.dataStructure.getOperations());
+          }}
         >
           <Image className='h-full w-full' src={playIcon} alt='' />
         </button>
@@ -118,9 +124,12 @@ const OperationsTab = () => {
 
       {/* Code Snippet */}
       <ContentBox title='Code Snippet' icon={codeIcon}>
-        <pre className={`${jetbrains.className} text-xs/loose overflow-x-scroll scrollbar`}>{sampleCodeSnippet}</pre>
+        {/* <pre id='code-canvas' className={`${jetbrains.className} text-xs/loose overflow-x-scroll scrollbar`}>{sampleCodeSnippet}</pre> */}
+        <div className='overflow-x-scroll scrollbar'>
+          <svg id='code-canvas'></svg>
+        </div>
       </ContentBox>
-    </>
+    </VisualiserContext.Provider>
   )
 }
 

@@ -1,4 +1,4 @@
-import { barlow } from '@/fonts';
+import { barlow } from '@/lib/fonts';
 import Image from 'next/image';
 import React from 'react';
 

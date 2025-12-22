@@ -1,4 +1,4 @@
-import { monomaniac } from '@/fonts';
+import { monomaniac } from '@/lib/fonts';
 import Image from 'next/image';
 import React from 'react';
 

@@ -1,9 +1,9 @@
-import Visualiser2 from "@/components/Visualiser/Visualiser2";
+import Visualiser from "@/components/Visualiser";
 
 export default function VisualiserPage() {
   return (
     <main className='h-[calc(100vh-56px)]'>
-      <Visualiser2 />
+      <Visualiser />
       {/* <Visualiser /> */}
     </main>
   );

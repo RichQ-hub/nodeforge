@@ -1,4 +1,4 @@
-import { pixelify } from '@/fonts';
+import { pixelify } from '@/lib/fonts';
 import Link from 'next/link';
 import Image from 'next/image';
 

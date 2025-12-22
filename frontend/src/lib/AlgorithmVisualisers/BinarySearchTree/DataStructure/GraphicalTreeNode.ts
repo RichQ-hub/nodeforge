@@ -15,14 +15,14 @@ export interface NodeCoordinates {
 }
 
 class GraphicalTreeNode {
-  private _nodeCoordinates: NodeCoordinates;
+  private _coordinates: NodeCoordinates;
   private _value: number;
   private _leftChild: GraphicalTreeNode | null;
   private _rightChild: GraphicalTreeNode | null;
   private _svgData: SVGData;
 
   public constructor(nodeCoordinates: NodeCoordinates, value: number, svgData: SVGData) {
-    this._nodeCoordinates = nodeCoordinates;
+    this._coordinates = nodeCoordinates;
     this._value = value;
     this._svgData = svgData;
     this._leftChild = null;
@@ -66,11 +66,11 @@ class GraphicalTreeNode {
   // Getters and Setters.
   // ==============================================================================
 
-  public get nodeCoordinates(): NodeCoordinates {
-    return this._nodeCoordinates;
+  public get coordinates(): NodeCoordinates {
+    return this._coordinates;
   }
-  public set nodeCoordinates(value: NodeCoordinates) {
-    this._nodeCoordinates = value;
+  public set coordinates(value: NodeCoordinates) {
+    this._coordinates = value;
   }
 
   public get value_1(): number {

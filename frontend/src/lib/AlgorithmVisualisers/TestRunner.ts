@@ -1,6 +1,6 @@
 import { Runner, Timeline } from "@svgdotjs/svg.js";
-import AnimationProducer from "./AnimationProducer";
-import BSTAnimations from "./BinarySearchTree/AnimationControllers/BSTAnimations";
+import AnimationProducer from "./common/AnimationProducer";
+import BSTAnimations from "./BinarySearchTree/Animation/BSTAnimations";
 import React from "react";
 
 const CANVAS_ID: string = '#visualiser-canvas';
@@ -19,7 +19,7 @@ class TestRunner {
   }
 
   public buildAnimation(): void {
-    const anim = this._bstAnimationLibrary.drawNode(100, 100);
+    const anim = this._bstAnimationLibrary.drawNode(2, 100, 100);
 
     anim.forEach((a) => {
       this._animationProducer.addSequenceAnimation(a);
@@ -27,7 +27,7 @@ class TestRunner {
 
     this._animationProducer.finishSequence();
 
-    const anim2 = this._bstAnimationLibrary.drawNode(200, 200);
+    const anim2 = this._bstAnimationLibrary.drawNode(2, 200, 200);
     anim2.forEach((a) => {
       this._animationProducer.addSequenceAnimation(a);
     })
