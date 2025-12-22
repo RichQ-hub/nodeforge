@@ -21,6 +21,10 @@ class AnimationProducer {
     this._currentSequence.push(animation);
   }
 
+  public addMultipleSequenceAnimations(animations: Runner[]) {
+    this._currentSequence.push(...animations);
+  }
+
   public finishSequence() {
     if (this.currentSequence.length > 0) {
       this.animationSteps.push({

@@ -1,4 +1,6 @@
-import ContentBox from '../ContentBox'
+'use client';
+
+import ContentBox from '../ContentBox';
 
 import optionsIcon from '@/assets/options.svg';
 import codeIcon from '@/assets/code.svg';
@@ -9,62 +11,17 @@ import playIcon from '@/assets/play.svg';
 import Image from 'next/image';
 import VisualiserController from '@/lib/AlgorithmVisualisers/VisualiserController';
 import VisualiserContext from '@/context/VisualiserContext';
-
-const sampleCodeSnippet0 = 
-`struct node *insert(struct node *node, int value) {
-  if (node == null)
-    return create_new_node(value);
-  if (value < node->value)
-    node->left = insert(node->left, value);
-  else if (value > node->value)
-    node->right = insert(node->right, value);
-  else if (value == node->value)
-    return node;
-
-  node->height = height(node);
-  int balance = height(node->left) - height(node->right);
-  if (balance > 1) {
-    if (value > node->left->value)
-      node->left = rotate_left(node->left);
-    return rotate_right(node);
-  } else if (balance < -1) {
-    if (value < node->right->value)
-      node->right = rotate_right(node->right);
-    return rotate_left(node);
-  } else {
-    return node;
-  }
-}`
-
-const sampleCodeSnippet = 
-`struct node *insert(struct node *node, int value) {
-  if (node == null)
-    return create_new_node(value);
-  if (value < node->value)
-    node->left = insert(node->left, value);
-  else if (value > node->value)
-    node->right = insert(node->right, value);
-  else if (value == node->value)
-    return node;
-
-  node->height = height(node);
-  int balance = height(node->left) - height(node->right);
-  if (balance > 1) {
-    if (value > node->left->value)
-      node->left = rotate_left(node->left);
-    return rotate_right(node);
-  } else if (balance < -1) {
-}
-}
-mike
-yo
-miassss
-dumb
-ppook`
+import { useEffect, useState } from 'react';
 
 const controller = new VisualiserController();
 
 const OperationsTab = () => {
+  const [selectedOperation, setSelectedOperation] = useState<string>('');
+
+  useEffect(() => {
+    controller.selectOperation(selectedOperation);
+  }, [selectedOperation]);
+
   return (
     <VisualiserContext.Provider value={{ controller }}>
       {/* Select Algorithm Section */}
@@ -80,7 +37,12 @@ const OperationsTab = () => {
             <h2 className='text-nodeforge-aqua mr-2'>Action:</h2>
             <p>Search</p>
           </div>
-          <button className='p-2 w-10 ml-auto hover:bg-white/50 cursor-pointer shrink-0'>
+          <button
+            className='p-2 w-10 ml-auto hover:bg-white/50 cursor-pointer shrink-0'
+            onClick={() => {
+              setSelectedOperation('Insert');
+            }}
+          >
             <Image className='' src={listIcon} alt='' />
           </button>
         </div>
@@ -90,9 +52,7 @@ const OperationsTab = () => {
           className='ml-4 rounded-3xl border border-white/15 bg-nodeforge-brand p-3 cursor-pointer'
           type='button'
           onClick={() => {
-            controller.switchOperation('Insert');
-            controller.runOperation('Insert', 1);
-            console.log(controller.dataStructure.getOperations());
+            controller.runOperation(selectedOperation, 1);
           }}
         >
           <Image className='h-full w-full' src={playIcon} alt='' />

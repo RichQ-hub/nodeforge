@@ -6,7 +6,7 @@ import CodeAnimations from '../CodeLine/CodeAnimations';
 interface IDataStructure {
   execute(command: any, ...args: any[]): any;
   getOperations(): string[];
-  switchOperation(operationKey: string): void;
+  renderCode(operationKey: string): void;
 }
 
 abstract class GraphicalDataStructure implements IDataStructure {
@@ -23,8 +23,8 @@ abstract class GraphicalDataStructure implements IDataStructure {
 
   public abstract registerOperations(): void;
 
-  public execute(...args: any[]) {
-    const commandFn = this._operations.get(this._selectedOperation);
+  public execute(operationKey: string, ...args: any[]) {
+    const commandFn = this._operations.get(operationKey);
     if (!commandFn) {
       console.log('Operation does not exist.');
       return;
@@ -37,20 +37,15 @@ abstract class GraphicalDataStructure implements IDataStructure {
     return Array.from(this._operations.keys());
   }
 
-  public switchOperation(operationKey: string): void {
-    const operationDoc = this._operations.get(operationKey);
-    if (!operationDoc) {
-      console.log('Operation not found');
+  public renderCode(operationKey: string): void {
+    this.clearCodeCanvas();
+    const operation = this._operations.get(operationKey);
+    if (!operation) {
+      console.log('Cannot render operation code.');
       return;
     }
 
-    this._selectedOperation = operationKey;
-    this.renderCode(operationDoc.codeSnippet);
-  }
-
-  private renderCode(codeSnippet: string): void {
-    this.clearCodeCanvas();
-    const lines = codeSnippet.split('\n');
+    const lines = operation.codeSnippet.split('\n');
 
     let maxCanvasWidth = 0;
 

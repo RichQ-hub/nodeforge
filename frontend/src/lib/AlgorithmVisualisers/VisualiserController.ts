@@ -19,10 +19,6 @@ class VisualiserController {
     this._timelineDuration = 0;
   }
 
-  public switchOperation(operationKey: string): void {
-    this._dataStructure.switchOperation(operationKey);
-  }
-
   /**
    * FOR TESTING.
    */
@@ -36,13 +32,16 @@ class VisualiserController {
   // ==============================================================================
 
   public runOperation(command: string, ...args: number[]) {
-    this._dataStructure.switchOperation(command);
-    const animationProducer = this._dataStructure.execute(...args);
+    const animationProducer = this._dataStructure.execute(command, ...args);
     if (!animationProducer) {
       return;
     }
 
     this.constructTimeline(animationProducer);
+  }
+
+  public selectOperation(operationKey: string) {
+    this._dataStructure.renderCode(operationKey);
   }
 
   public constructTimeline(animationProducer: AnimationProducer): void {

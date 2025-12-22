@@ -3,8 +3,8 @@ import { Circle, Line, Marker, NumberAlias, Text } from "@svgdotjs/svg.js";
 export interface SVGData {
   shape: Circle;
   text: Text;
-  // leftChildLine: Line;
-  // rightChildLine: Line;
+  leftChildLine: Line;
+  rightChildLine: Line;
   // leftChildArrow: Marker;
   // rightChildMarker: Marker;
 }
@@ -40,6 +40,7 @@ class GraphicalTreeNode {
       'stroke-width': 2,
       opacity: 0,
     });
+
     const text = new Text()
       .text(value.toString())
       .font({
@@ -52,12 +53,27 @@ class GraphicalTreeNode {
         opacity: 0,
       });
 
+    const leftLine = new Line()
+      .attr({
+        stroke: '#0285BD',
+        opacity: 0,
+        'stroke-width': 2,
+      });
+    const rightLine = new Line()
+      .attr({
+        stroke: '#0285BD',
+        opacity: 0,
+        'stroke-width': 2,
+      });
+
     return new GraphicalTreeNode(
       { x: 0, y: 0},
       value,
       {
         shape,
         text,
+        leftChildLine: leftLine,
+        rightChildLine: rightLine,
       }
     );
   }

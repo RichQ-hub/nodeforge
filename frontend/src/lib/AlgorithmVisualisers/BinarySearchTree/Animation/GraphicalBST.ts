@@ -51,13 +51,26 @@ class GraphicalBST extends GraphicalDataStructure {
       y: 100,
     }
 
-    const runners = this._bstAnimationLibrary.drawNode(newNode);
-    runners.forEach((run) => {
-      animationProducer.addSequenceAnimation(run);
-    })
-
+    animationProducer.addMultipleSequenceAnimations(
+      this._bstAnimationLibrary.drawNode(newNode)
+    )
     animationProducer.finishSequence();
+
+    animationProducer.addMultipleSequenceAnimations(
+      this._bstAnimationLibrary.highlightNode(newNode)
+    )
+    animationProducer.finishSequence();
+
+    animationProducer.addMultipleSequenceAnimations(
+      this._bstAnimationLibrary.UnhighlightNode(newNode)
+    )
+    animationProducer.finishSequence();
+
     return animationProducer;
+  }
+
+  public doInsert(node: GraphicalTreeNode, value: number, animationProducer: AnimationProducer ) {
+
   }
 
 
