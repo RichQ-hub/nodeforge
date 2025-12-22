@@ -23,7 +23,7 @@ const CanvasSidebar = ({
   setOpenSidebar: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
   return (
-    <aside className='bg-nodeforge-light-denim w-14 h-full flex flex-col z-100'>
+    <aside className='bg-nodeforge-light-denim w-14 h-full flex flex-col z-20'>
       {/* Toggle Sidebar Section */}
       <div
         className='h-16 flex flex-col justify-center'

@@ -40,7 +40,7 @@ const newClamp = (num: number, min: number, max: number) => {
 };
 
 const Visualiser = () => {
-  const [openSidebar, setOpenSidebar] = useState<boolean>(false);
+  const [openSidebar, setOpenSidebar] = useState<boolean>(true);
   const [selectedTab, setSelectedTab] = useState<number>(0);
   const [sidebarWidth, setSidebarWidth] = useState<number>(400);
 

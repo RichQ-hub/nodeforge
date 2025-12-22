@@ -6,17 +6,18 @@ import optionsIcon from '@/assets/options.svg';
 import codeIcon from '@/assets/code.svg';
 import { barlow } from '@/lib/fonts';
 
-import listIcon from '@/assets/list.svg';
 import playIcon from '@/assets/play.svg';
 import Image from 'next/image';
 import VisualiserController from '@/lib/AlgorithmVisualisers/VisualiserController';
 import VisualiserContext from '@/context/VisualiserContext';
 import { useEffect, useState } from 'react';
+import SelectOperationBtn from './SelectOperationBtn';
 
 const controller = new VisualiserController();
 
 const OperationsTab = () => {
   const [selectedOperation, setSelectedOperation] = useState<string>('');
+  const [args, setArgs] = useState<number[]>([]);
 
   useEffect(() => {
     controller.selectOperation(selectedOperation);
@@ -27,7 +28,7 @@ const OperationsTab = () => {
       {/* Select Algorithm Section */}
       <div className={`${barlow.className} h-10 mb-6 flex`}>
         {/* Select Algorithm Box*/}
-        <div className='grow flex items-center overflow-hidden bg-nodeforge-box-bg rounded-2xl border border-white/15'>
+        <div className='grow flex items-center overflow-hidden bg-nodeforge-box-bg rounded-bl-2xl rounded-tl-2xl border border-r-0 border-white/15'>
           {/* Icon */}
           <div className='p-2 bg-nodeforge-aqua w-10 rounded-br-2xl shrink-0'>
             <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M406.162286 94.061714l12.653714 65.316572a365.933714 365.933714 0 0 0-267.264 501.540571l-61.220571 25.892572a432.420571 432.420571 0 0 1 315.830857-592.749715z m-193.828572 757.028572l42.569143-51.2a364.105143 364.105143 0 0 0 233.764572 84.48c87.771429 0 170.642286-31.012571 236.251428-86.528l43.008 50.761143A430.665143 430.665143 0 0 1 488.594286 950.857143a430.665143 430.665143 0 0 1-276.260572-99.766857z m426.422857-666.331429a135.68 135.68 0 1 1 7.753143-68.754286 432.713143 432.713143 0 0 1 268.873143 332.8c1.462857 9.069714 2.706286 21.065143 3.803429 35.986286a31.451429 31.451429 0 0 1-31.451429 33.718857 34.889143 34.889143 0 0 1-34.816-32.329143 366.153143 366.153143 0 0 0-214.162286-301.348571z m-126.464 29.403429a78.555429 78.555429 0 1 0 0-157.037715 78.555429 78.555429 0 0 0 0 157.037715z m-320.658285 672.914285a135.68 135.68 0 1 1 0-271.286857 135.68 135.68 0 0 1 0 271.36z m0-57.051428a78.555429 78.555429 0 1 0 0-157.110857 78.555429 78.555429 0 0 0 0 157.110857z m640.731428 57.051428a135.68 135.68 0 1 1 0-271.286857 135.68 135.68 0 0 1 0 271.36z m0-57.051428a78.555429 78.555429 0 1 0 0-157.110857 78.555429 78.555429 0 0 0 0 157.110857z" fill="#000" /></svg>
@@ -35,17 +36,11 @@ const OperationsTab = () => {
           {/* Title */}
           <div className='px-3 py-2 flex items-center font-bold'>
             <h2 className='text-nodeforge-aqua mr-2'>Action:</h2>
-            <p>Search</p>
+            <p>{selectedOperation}</p>
           </div>
-          <button
-            className='p-2 w-10 ml-auto hover:bg-white/50 cursor-pointer shrink-0'
-            onClick={() => {
-              setSelectedOperation('Insert');
-            }}
-          >
-            <Image className='' src={listIcon} alt='' />
-          </button>
         </div>
+
+        <SelectOperationBtn setSelectedOperation={setSelectedOperation} />
 
         {/* Play Algorithm Button */}
         <button

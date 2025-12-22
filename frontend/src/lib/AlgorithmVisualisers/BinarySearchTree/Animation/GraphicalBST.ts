@@ -16,6 +16,10 @@ class GraphicalBST extends GraphicalDataStructure {
     this.registerOperations();
   }
 
+  /**
+   * NOTE: Read the following for how .bind() works:
+   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
+   */
   public registerOperations(): void {
     this._operations.set('Insert', {
       description: 'Inserts a new node as a leaf node.',
