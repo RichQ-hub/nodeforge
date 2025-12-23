@@ -1,6 +1,8 @@
 import { barlow } from '@/lib/fonts';
 import Image from 'next/image';
 import React from 'react';
+import { motion } from 'framer-motion';
+import { listItemVariants } from '@/lib/framerVariants';
 
 const ContentBox = ({
   title,
@@ -12,7 +14,10 @@ const ContentBox = ({
   children: React.ReactNode;
 }) => {
   return (
-    <div className={`${barlow.className} flex flex-col mb-6 overflow-y-hidden bg-nodeforge-box-bg rounded-2xl border border-white/15`}>
+    <motion.div
+      className={`${barlow.className} flex flex-col mb-6 overflow-y-hidden bg-nodeforge-box-bg rounded-2xl border border-white/15`}
+      variants={listItemVariants}
+    >
       <div className='h-10 bg-nodeforge-light-denim flex items-center border-b border-white/15 shrink-0'>
         {/* Icon */}
         <div className='p-2 bg-nodeforge-amber w-10 rounded-br-2xl'>
@@ -26,7 +31,7 @@ const ContentBox = ({
       <div className='font-semibold p-4'>
         {children}
       </div>
-    </div>
+    </motion.div>
   )
 }
 

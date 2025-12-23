@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { motion, stagger } from 'framer-motion';
 import { barlow } from '@/lib/fonts';
 import { mat3, vec2 } from 'gl-matrix';
+import { listItemVariants, listVariants } from '@/lib/framerVariants';
 
 const containerVariant = {
   open: {
@@ -14,28 +15,6 @@ const containerVariant = {
   closed: {
     minWidth: 0,
     display: 'flex'
-  }
-}
-
-const listVariants = {
-  open: {
-    transition: { delayChildren: stagger(0.05, { startDelay: 0.2 }) },
-  },
-  closed: {
-    transition: { delayChildren: stagger(0.05, { from: "last" }) },
-  },
-}
-
-const attrVariants = {
-  open: {
-    y: 0,
-    opacity: 1,
-    transition: { y: { stiffness: 1000, velocity: -100 } },
-  },
-  closed: {
-    y: 50,
-    opacity: 0,
-    transition: { y: { stiffness: 1000 } },
   }
 }
 
@@ -135,28 +114,28 @@ const CanvasInfoTip = ({
           >
             <motion.div
               className='flex justify-between items-center mb-1'
-              variants={attrVariants}
+              variants={listItemVariants}
             >
               <p>Mouse Coordinates: </p>
               <p>{'{'}x: <span className='text-nodeforge-code-blue'>{mousePos.x}</span>, y: <span className='text-nodeforge-code-blue'>{mousePos.y}</span>{'}'}</p>
             </motion.div>
             <motion.div
               className='flex justify-between items-center mb-1'
-              variants={attrVariants}
+              variants={listItemVariants}
             >
               <p>Dimensions: </p>
               <p>{'{'}w: <span className='text-nodeforge-code-blue'>{dimensions.width}</span>, h: <span className='text-nodeforge-code-blue'>{dimensions.height}</span>{'}'}</p>
             </motion.div>
             <motion.div
               className='flex justify-between items-center mb-1'
-              variants={attrVariants}
+              variants={listItemVariants}
             >
               <p>Origin: </p>
               <p>{'{'}x: <span className='text-nodeforge-code-blue'>{origin[0].toFixed(2)}</span>, y: <span className='text-nodeforge-code-blue'>{origin[1].toFixed(2)}</span>{'}'}</p>
             </motion.div>
             <motion.div
               className='flex justify-between items-center mb-1'
-              variants={attrVariants}
+              variants={listItemVariants}
             >
               <p>Scale: </p>
               <p><span className='text-nodeforge-code-blue'>{matrix[0].toFixed(3)}</span></p>
