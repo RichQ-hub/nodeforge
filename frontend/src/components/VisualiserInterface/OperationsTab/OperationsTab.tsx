@@ -56,7 +56,9 @@ const OperationsTab = () => {
         <SelectOperationBtn setSelectedOperation={setSelectedOperation} />
 
         {/* Play Algorithm Button */}
-        <button
+        <motion.button
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.9 }}
           className='ml-4 rounded-3xl border border-white/15 bg-nodeforge-brand p-3 cursor-pointer'
           type='button'
           onClick={() => {
@@ -64,7 +66,7 @@ const OperationsTab = () => {
           }}
         >
           <Image className='h-full w-full' src={playIcon} alt='' />
-        </button>
+        </motion.button>
       </motion.div>
 
       {/* Operation Inputs Menu */}

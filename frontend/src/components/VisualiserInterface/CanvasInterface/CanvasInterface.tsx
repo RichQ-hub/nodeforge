@@ -19,7 +19,7 @@ const CanvasInterface = ({
       </div>
 
       {/* Main Section */}
-      <div className='h-full px-5 mr-3 overflow-y-auto scrollbar'>
+      <div className='h-full px-5 mr-3 overflow-y-auto scrollbar pt-2'>
         {children}
       </div>
     </div>

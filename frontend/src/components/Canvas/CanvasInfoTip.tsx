@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { motion, stagger } from 'framer-motion';
-import { barlow } from '@/lib/fonts';
+import { motion } from 'framer-motion';
+import { barlow, jetbrains } from '@/lib/fonts';
 import { mat3, vec2 } from 'gl-matrix';
 import { listItemVariants, listVariants } from '@/lib/framerVariants';
 
 const containerVariant = {
   open: {
-    minWidth: 300,
+    minWidth: 330,
     padding: '12px 24px',
     display: 'block'
   },
@@ -117,33 +117,53 @@ const CanvasInfoTip = ({
               variants={listItemVariants}
             >
               <p>Mouse Coordinates: </p>
-              <p>{'{'}x: <span className='text-nodeforge-code-blue'>{mousePos.x}</span>, y: <span className='text-nodeforge-code-blue'>{mousePos.y}</span>{'}'}</p>
+              <CodeText>
+                {'{'}x: <span className='text-nodeforge-code-blue'>{mousePos.x}</span>, y: <span className='text-nodeforge-code-blue'>{mousePos.y}</span>{'}'}
+              </CodeText>
             </motion.div>
             <motion.div
               className='flex justify-between items-center mb-1'
               variants={listItemVariants}
             >
               <p>Dimensions: </p>
-              <p>{'{'}w: <span className='text-nodeforge-code-blue'>{dimensions.width}</span>, h: <span className='text-nodeforge-code-blue'>{dimensions.height}</span>{'}'}</p>
+              <CodeText>
+                {'{'}w: <span className='text-nodeforge-code-blue'>{dimensions.width.toFixed(0)}</span>, h: <span className='text-nodeforge-code-blue'>{dimensions.height.toFixed(0)}</span>{'}'}
+              </CodeText>
             </motion.div>
             <motion.div
               className='flex justify-between items-center mb-1'
               variants={listItemVariants}
             >
               <p>Origin: </p>
-              <p>{'{'}x: <span className='text-nodeforge-code-blue'>{origin[0].toFixed(2)}</span>, y: <span className='text-nodeforge-code-blue'>{origin[1].toFixed(2)}</span>{'}'}</p>
+              <CodeText>
+                {'{'}x: <span className='text-nodeforge-code-blue'>{origin[0].toFixed(2)}</span>, y: <span className='text-nodeforge-code-blue'>{origin[1].toFixed(2)}</span>{'}'}
+              </CodeText>
             </motion.div>
             <motion.div
               className='flex justify-between items-center mb-1'
               variants={listItemVariants}
             >
               <p>Scale: </p>
-              <p><span className='text-nodeforge-code-blue'>{matrix[0].toFixed(3)}</span></p>
+              <CodeText>
+                <span className='text-nodeforge-code-blue'>{matrix[0].toFixed(3)}</span>
+              </CodeText>
             </motion.div>
           </motion.div>
         </>
       )}
     </motion.div>
+  )
+}
+
+const CodeText = ({
+  children
+}: {
+  children: React.ReactNode;
+}) => {
+  return (
+    <p className={`${jetbrains.className} text-sm`}>
+      {children}
+    </p>
   )
 }
 

@@ -6,6 +6,7 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import CanvasInfoTip from './CanvasInfoTip';
 import VisualiserContext from '@/context/VisualiserContext';
 import { barlow } from '@/lib/fonts';
+import { motion } from 'framer-motion';
 
 const ORIGIN = Object.freeze({ x: 0, y: 0 });
 
@@ -195,7 +196,7 @@ const Canvas = () => {
   }, [canvasOrigin]);
 
   return (
-    <div className='relative w-full h-full'>
+    <div className='relative w-full h-full overflow-hidden'>
       <svg
         className='bg-nodeforge-canvas w-full h-full'
         id='visualiser-canvas'
@@ -214,14 +215,27 @@ const Canvas = () => {
         matrix={transformMatrix}
       />
 
-      <button
-        className={`${barlow.className} font-semibold text-lg flex items-center px-3 py-1 bg-red-500 absolute bottom-4 right-4 rounded-xl cursor-pointer`}
+      <motion.button
+        initial={{
+          opacity: 0,
+          y: 30,
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+        }}
+        whileHover={{ scale: 1.08 }}
+        whileTap={{ scale: 0.9 }}
+        className={`
+          ${barlow.className} group font-semibold text-lg flex items-center px-3 py-1 bg-red-500 absolute bottom-4 right-4
+          rounded-xl cursor-pointer hover:text-white hover:border hover:border-red-700`
+        }
         type='button'
         onClick={() => controller.clearVisualiserCanvas()}
       >
         Clear
-        <svg className='fill-black w-6 h-6' viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fillRule="evenodd" clipRule="evenodd" d="M15.0722 3.9967L20.7508 9.83395L17.0544 13.5304L13.0758 17.5H21.0041V19H7.93503L4.00195 15.0669L15.0722 3.9967ZM10.952 17.5L15.4628 12.9994L11.8268 9.3634L6.12327 15.0669L8.55635 17.5H10.952Z"></path> </g></svg>
-      </button>
+        <svg className='fill-black w-6 h-6 group-hover:fill-white' viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fillRule="evenodd" clipRule="evenodd" d="M15.0722 3.9967L20.7508 9.83395L17.0544 13.5304L13.0758 17.5H21.0041V19H7.93503L4.00195 15.0669L15.0722 3.9967ZM10.952 17.5L15.4628 12.9994L11.8268 9.3634L6.12327 15.0669L8.55635 17.5H10.952Z"></path> </g></svg>
+      </motion.button>
     </div>
   )
 }
