@@ -75,15 +75,15 @@ class GraphicalBST extends GraphicalDataStructure {
       animationProducer.finishSequence();
 
       animationProducer.addMultipleSequenceAnimations(
-        this._bstAnimationLibrary.unhighlightNode(this._root)
+        this._bstAnimationLibrary.unhighlightBST(this._root)
       )
       animationProducer.finishSequence();
     } else {
-      this.doInsert(this._root, value, 2, animationProducer);
+      this.doInsert(this._root, value, animationProducer);
 
-      // Unhighlight the root node.
+      // Unhighlight the entire tree once done.
       animationProducer.addMultipleSequenceAnimations(
-        this._bstAnimationLibrary.unhighlightNode(this._root)
+        this._bstAnimationLibrary.unhighlightBST(this._root)
       )
       animationProducer.finishSequence();
     }
@@ -91,19 +91,56 @@ class GraphicalBST extends GraphicalDataStructure {
     return animationProducer;
   }
 
-  public doInsert(node: GraphicalTreeNode, value: number, level: number, animationProducer: AnimationProducer) {
+  public doInsert(node: GraphicalTreeNode, value: number, animationProducer: AnimationProducer) {
     if (value === node.value) {
       // Node already exists, so we end recursion.
       animationProducer.addMultipleSequenceAnimations(
         this._bstAnimationLibrary.highlightNode(node)
       )
       animationProducer.finishSequence();
+
       animationProducer.addMultipleSequenceAnimations(
         this._bstAnimationLibrary.unhighlightNode(node)
       )
       animationProducer.finishSequence();
     } else if (value < node.value) {
+      // TODO: TEST FOR NOW.
+      animationProducer.addMultipleSequenceAnimations(
+        this._bstAnimationLibrary.halfHighlightNode(node)
+      )
+      animationProducer.finishSequence();
 
+      animationProducer.addMultipleSequenceAnimations(
+        this._bstAnimationLibrary.highlightLine(node.svgData.leftChildLine)
+      )
+      animationProducer.finishSequence();
+
+      // We can insert.
+      if (node.leftChild === null) {
+        node.leftChild = GraphicalTreeNode.createNode(value);
+        // TODO: Find better way to dynamically set node coords based on depth.
+        node.leftChild.coordinates = {
+          x: node.coordinates.x - 300,
+          y: node.coordinates.y + 100,
+        }
+
+        animationProducer.addMultipleSequenceAnimations(
+          this._bstAnimationLibrary.revealLine(node.svgData.leftChildLine)
+        )
+        animationProducer.finishSequence();
+
+        animationProducer.addMultipleSequenceAnimations(
+          this._bstAnimationLibrary.drawNode(node.leftChild)
+        )
+        animationProducer.finishSequence();
+
+        animationProducer.addMultipleSequenceAnimations(
+          this._bstAnimationLibrary.highlightNode(node.leftChild)
+        )
+        animationProducer.finishSequence();
+      } else {
+        this.doInsert(node.leftChild, value, animationProducer);
+      }
     } else if (value > node.value) {
 
     }

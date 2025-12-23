@@ -9,7 +9,6 @@ import { listItemVariants, listVariants } from '@/lib/framerVariants';
 const containerVariant = {
   open: {
     minWidth: 330,
-    padding: '12px 24px',
     display: 'block'
   },
   closed: {
@@ -51,7 +50,7 @@ const CanvasInfoTip = ({
 
   return (
     <motion.div
-      className={`${barlow.className} group text-white absolute top-3 right-3 bg-nodeforge-box border border-white/15 items-center justify-center hover:border-nodeforge-amber`}
+      className={`${barlow.className} group overflow-hidden text-white absolute top-3 right-3 bg-nodeforge-box border border-white/15 items-center justify-center hover:border-nodeforge-amber`}
       layout
       style={{
         ...containerVariant[open ? 'open' : 'closed'],
@@ -85,7 +84,7 @@ const CanvasInfoTip = ({
         </motion.button>
       ) : (
         <>
-          <div className='mb-2 flex items-center justify-between'>
+          <div className='py-2 px-5 flex items-center justify-between border-b border-b-white/15'>
             {/* Title */}
             <motion.h2 className='font-bold text-nodeforge-amber text-lg'>Canvas Attributes</motion.h2>
 
@@ -107,7 +106,7 @@ const CanvasInfoTip = ({
           </div>
 
           <motion.div
-            className='font-semibold'
+            className='font-semibold bg-nodeforge-box-bg py-2 px-5'
             variants={listVariants}
             initial='closed'
             animate='open'

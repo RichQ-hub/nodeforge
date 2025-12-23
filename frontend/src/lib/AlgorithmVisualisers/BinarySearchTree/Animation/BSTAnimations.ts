@@ -40,27 +40,47 @@ class BSTAnimations {
     const rightLineCoords = getPointerStartEndCoordinates(x, y, x + 300, y + 100, 30);
     svgData.rightChildLine.plot(rightLineCoords);
 
-    sequence.push(svgData.shape.animate(1000).attr({
+    sequence.push(svgData.shape.animate(600).attr({
       opacity: 1
     }));
 
-    sequence.push(svgData.text.animate(1000).attr({
+    sequence.push(svgData.text.animate(600).attr({
       opacity: 1
     }));
 
     return sequence;
   }
 
+  public unhighlightBST(root: GraphicalTreeNode): Runner[] {
+    const sequence: Runner[] = [];
+    this.recurseUnlighlightBST(root, sequence);
+    return sequence;
+  }
+
+  private recurseUnlighlightBST(node: GraphicalTreeNode | null, sequence: Runner[]): void {
+    if (node === null) {
+      return;
+    }
+
+    sequence.push(
+      ...this.unhighlightNode(node),
+      ...this.unhighlightLine(node.svgData.leftChildLine),
+      ...this.unhighlightLine(node.svgData.rightChildLine)
+    );
+    this.recurseUnlighlightBST(node.leftChild, sequence);
+    this.recurseUnlighlightBST(node.rightChild, sequence);
+  }
+
   public highlightNode(node: GraphicalTreeNode): Runner[] {
     const sequence: Runner[] = [];
     const svgData = node.svgData;
 
-    sequence.push(svgData.shape.animate(1000).attr({
+    sequence.push(svgData.shape.animate(600).attr({
       fill: '#01CF68',
       stroke: '#00A547',
     }));
 
-    sequence.push(svgData.text.animate(1000).attr({
+    sequence.push(svgData.text.animate(600).attr({
       fill: '#ffffff'
     }));
 
@@ -71,11 +91,11 @@ class BSTAnimations {
     const sequence: Runner[] = [];
     const svgData = node.svgData;
 
-    sequence.push(svgData.shape.animate(1000).attr({
+    sequence.push(svgData.shape.animate(600).attr({
       stroke: '#00A547',
     }));
 
-    sequence.push(svgData.text.animate(1000).attr({
+    sequence.push(svgData.text.animate(600).attr({
       fill: '#00A547'
     }));
 
@@ -101,7 +121,7 @@ class BSTAnimations {
   public revealLine(line: Line): Runner[] {
     const sequence: Runner[] = [];
     
-    sequence.push(line.animate(1000).attr({
+    sequence.push(line.animate(600).attr({
       opacity: 1
     }));
 
@@ -111,7 +131,7 @@ class BSTAnimations {
   public highlightLine(line: Line): Runner[] {
     const sequence: Runner[] = [];
 
-    sequence.push(line.animate(1000).attr({
+    sequence.push(line.animate(600).attr({
       stroke: '#00A547',
     }));
 

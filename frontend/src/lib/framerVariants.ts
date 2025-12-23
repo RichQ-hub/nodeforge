@@ -2,7 +2,7 @@ import { stagger } from "framer-motion";
 
 export const listVariants = {
   open: {
-    transition: { delayChildren: stagger(0.05, { startDelay: 0.2 }) },
+    transition: { delayChildren: stagger(0.05, { startDelay: 0.1 }) },
   },
   closed: {
     transition: { delayChildren: stagger(0.05, { from: "last" }) },
