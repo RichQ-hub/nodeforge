@@ -1,11 +1,12 @@
 import { SVG } from '@svgdotjs/svg.js';
-import { CODE_CANVAS_ID, OperationUsage, VISUALISER_CANVAS_ID } from './constants';
+import { CODE_CANVAS_ID, OperationUsage } from './constants';
 import GraphicalCodeLine from '../CodeLine/GraphicalCodeLine';
 import CodeAnimations from '../CodeLine/CodeAnimations';
 
 interface IDataStructure {
   execute(command: any, ...args: any[]): any;
   getOperations(): string[];
+  resetDataStructure(): void;
   renderCode(operationKey: string): void;
 }
 
@@ -22,6 +23,7 @@ abstract class GraphicalDataStructure implements IDataStructure {
   }
 
   public abstract registerOperations(): void;
+  public abstract resetDataStructure(): void;
 
   public execute(operationKey: string, ...args: any[]) {
     const commandFn = this._operations.get(operationKey);
@@ -82,10 +84,6 @@ abstract class GraphicalDataStructure implements IDataStructure {
   public clearCodeCanvas(): void {
     this._codeLines = [];
     SVG(CODE_CANVAS_ID).clear();
-  }
-
-  public clearVisualiserCanvas(): void {
-    SVG(VISUALISER_CANVAS_ID).clear();
   }
 }
 

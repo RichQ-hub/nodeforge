@@ -1,7 +1,8 @@
-import { Runner, Timeline } from "@svgdotjs/svg.js";
+import { Runner, SVG, Timeline } from "@svgdotjs/svg.js";
 import AnimationProducer from "./common/AnimationProducer";
 import GraphicalDataStructure from "./common/GraphicalDataStructure";
 import GraphicalBST from "./BinarySearchTree/Animation/GraphicalBST";
+import { VISUALISER_CANVAS_ID } from "./common/constants";
 
 class VisualiserController {
   private _dataStructure: GraphicalDataStructure;
@@ -68,6 +69,11 @@ class VisualiserController {
 
   public pauseTimeline() {
     this._timeline.pause();
+  }
+
+  public clearVisualiserCanvas(): void {
+    SVG(VISUALISER_CANVAS_ID).clear();
+    this.dataStructure.resetDataStructure();
   }
 
   // ==============================================================================

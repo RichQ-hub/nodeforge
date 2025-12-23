@@ -45,6 +45,10 @@ class GraphicalBST extends GraphicalDataStructure {
     });
   }
 
+  public resetDataStructure(): void {
+    this._root = null;
+  }
+
   // ==============================================================================
   // Methods
   // ==============================================================================
