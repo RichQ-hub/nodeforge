@@ -37,6 +37,10 @@ abstract class GraphicalDataStructure implements IDataStructure {
     return Array.from(this._operations.keys());
   }
 
+  public getOperationDetails(operationKey: string): OperationUsage | undefined {
+    return this._operations.get(operationKey);
+  }
+
   public renderCode(operationKey: string): void {
     this.clearCodeCanvas();
     const operation = this._operations.get(operationKey);

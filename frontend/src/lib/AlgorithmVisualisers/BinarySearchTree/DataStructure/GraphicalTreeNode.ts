@@ -89,10 +89,10 @@ class GraphicalTreeNode {
     this._coordinates = value;
   }
 
-  public get value_1(): number {
+  public get value(): number {
     return this._value;
   }
-  public set value_1(value: number) {
+  public set value(value: number) {
     this._value = value;
   }
 

@@ -48,14 +48,6 @@ class BSTAnimations {
       opacity: 1
     }));
 
-    sequence.push(svgData.leftChildLine.animate(1000).attr({
-      opacity: 1
-    }));
-
-    sequence.push(svgData.rightChildLine.animate(1000).attr({
-      opacity: 1
-    }));
-
     return sequence;
   }
 
@@ -90,7 +82,7 @@ class BSTAnimations {
     return sequence;
   }
 
-  public UnhighlightNode(node: GraphicalTreeNode): Runner[] {
+  public unhighlightNode(node: GraphicalTreeNode): Runner[] {
     const sequence: Runner[] = [];
     const svgData = node.svgData;
 
@@ -106,6 +98,16 @@ class BSTAnimations {
     return sequence;
   }
 
+  public revealLine(line: Line): Runner[] {
+    const sequence: Runner[] = [];
+    
+    sequence.push(line.animate(1000).attr({
+      opacity: 1
+    }));
+
+    return sequence;
+  }
+
   public highlightLine(line: Line): Runner[] {
     const sequence: Runner[] = [];
 
@@ -116,7 +118,7 @@ class BSTAnimations {
     return sequence;
   }
 
-  public UnhighlightLine(line: Line): Runner[] {
+  public unhighlightLine(line: Line): Runner[] {
     const sequence: Runner[] = [];
 
     sequence.push(line.animate(600).attr({

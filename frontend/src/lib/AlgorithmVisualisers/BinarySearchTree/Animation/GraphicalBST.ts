@@ -23,11 +23,13 @@ class GraphicalBST extends GraphicalDataStructure {
   public registerOperations(): void {
     this._operations.set('Insert', {
       description: 'Inserts a new node as a leaf node.',
-      args: [{
-        name: 'Value',
-        placeholder: 'value',
-        inputType: 'number',
-      }],
+      args: [
+        {
+          name: 'Value',
+          placeholder: 'value',
+          inputType: 'number',
+        }
+      ],
       codeSnippet: insertCode,
       run: this.insert.bind(this),
     });
@@ -47,34 +49,60 @@ class GraphicalBST extends GraphicalDataStructure {
   // Methods
   // ==============================================================================
 
-  public insert(value: number, width: number, height: number): AnimationProducer {
+  public insert(value: number): AnimationProducer {
     const animationProducer = new AnimationProducer();
-    const newNode = GraphicalTreeNode.createNode(value);
-    newNode.coordinates = {
-      x: 100,
-      y: 100,
+
+    if (this._root === null) {
+      this._root = GraphicalTreeNode.createNode(value);
+      this._root.coordinates = {
+        x: 500,
+        y: 40,
+      }
+
+      // Draw and highlight newly added node.
+      animationProducer.addMultipleSequenceAnimations(
+        this._bstAnimationLibrary.drawNode(this._root)
+      )
+      animationProducer.finishSequence();
+
+      animationProducer.addMultipleSequenceAnimations(
+        this._bstAnimationLibrary.highlightNode(this._root)
+      )
+      animationProducer.finishSequence();
+
+      animationProducer.addMultipleSequenceAnimations(
+        this._bstAnimationLibrary.unhighlightNode(this._root)
+      )
+      animationProducer.finishSequence();
+    } else {
+      this.doInsert(this._root, value, 2, animationProducer);
+
+      // Unhighlight the root node.
+      animationProducer.addMultipleSequenceAnimations(
+        this._bstAnimationLibrary.unhighlightNode(this._root)
+      )
+      animationProducer.finishSequence();
     }
-
-    animationProducer.addMultipleSequenceAnimations(
-      this._bstAnimationLibrary.drawNode(newNode)
-    )
-    animationProducer.finishSequence();
-
-    animationProducer.addMultipleSequenceAnimations(
-      this._bstAnimationLibrary.highlightNode(newNode)
-    )
-    animationProducer.finishSequence();
-
-    animationProducer.addMultipleSequenceAnimations(
-      this._bstAnimationLibrary.UnhighlightNode(newNode)
-    )
-    animationProducer.finishSequence();
 
     return animationProducer;
   }
 
-  public doInsert(node: GraphicalTreeNode, value: number, animationProducer: AnimationProducer ) {
+  public doInsert(node: GraphicalTreeNode, value: number, level: number, animationProducer: AnimationProducer) {
+    if (value === node.value) {
+      // Node already exists, so we end recursion.
+      animationProducer.addMultipleSequenceAnimations(
+        this._bstAnimationLibrary.highlightNode(node)
+      )
+      animationProducer.finishSequence();
+      animationProducer.addMultipleSequenceAnimations(
+        this._bstAnimationLibrary.unhighlightNode(node)
+      )
+      animationProducer.finishSequence();
+    } else if (value < node.value) {
 
+    } else if (value > node.value) {
+
+    }
   }
 
 

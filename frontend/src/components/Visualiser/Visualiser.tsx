@@ -10,6 +10,8 @@ import operationsIcon from '@/assets/operation.svg';
 import descriptionIcon from '@/assets/description.svg';
 import DescriptionTab from "../VisualiserInterface/DescriptionTab";
 import clsx from "clsx";
+import VisualiserController from "@/lib/AlgorithmVisualisers/VisualiserController";
+import VisualiserContext from "@/context/VisualiserContext";
 
 const INTERFACE_TABS = [
   {
@@ -39,6 +41,8 @@ const newClamp = (num: number, min: number, max: number) => {
   return Math.min(Math.max(num, min), max);
 };
 
+const controller = new VisualiserController();
+
 const Visualiser = () => {
   const [openSidebar, setOpenSidebar] = useState<boolean>(true);
   const [selectedTab, setSelectedTab] = useState<number>(0);
@@ -49,70 +53,72 @@ const Visualiser = () => {
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
   return (
-    <div className='h-full flex'>
-      <CanvasSidebar
-        interfaceTabs={INTERFACE_TABS}
-        selectedTab={selectedTab}
-        setSelectedTab={setSelectedTab}
-        openSidebar={openSidebar}
-        setOpenSidebar={setOpenSidebar}
-      />
+    <VisualiserContext.Provider value={{ controller }}>
+      <div className='h-full flex'>
+        <CanvasSidebar
+          interfaceTabs={INTERFACE_TABS}
+          selectedTab={selectedTab}
+          setSelectedTab={setSelectedTab}
+          openSidebar={openSidebar}
+          setOpenSidebar={setOpenSidebar}
+        />
 
-      {/* Main Group */}
-      <div className='relative h-full w-full'>
-        {/* Expanded Sidebar */}
-        <aside
-          className={clsx(
-            'absolute top-0 bottom-0 left-0 transition-transform ease-[cubic-bezier(0.165,0.84,0.44,1)] duration-300',
-            openSidebar ? 'translate-x-0' : '-translate-x-full'
-          )}
-          style={{ width: sidebarWidth }}
-        >
-          <CanvasInterface>
-            {INTERFACE_TABS[selectedTab].node}
-          </CanvasInterface>
+        {/* Main Group */}
+        <div className='relative h-full w-full'>
+          {/* Expanded Sidebar */}
+          <aside
+            className={clsx(
+              'absolute top-0 bottom-0 left-0 transition-transform ease-[cubic-bezier(0.165,0.84,0.44,1)] duration-300',
+              openSidebar ? 'translate-x-0' : '-translate-x-full'
+            )}
+            style={{ width: sidebarWidth }}
+          >
+            <CanvasInterface>
+              {INTERFACE_TABS[selectedTab].node}
+            </CanvasInterface>
 
-          {/* Expanded Sidebar Drag Handler */}
+            {/* Expanded Sidebar Drag Handler */}
+            <div
+              className={clsx(
+                'absolute w-0.5 z-10 right-0 grow-0 top-0 bottom-0 cursor-col-resize',
+                isDragging ? 'bg-nodeforge-amber' : 'bg-slate-400',
+              )}
+              onMouseDown={(e: React.MouseEvent) => {
+                e.preventDefault();
+                const { ownerDocument } = e.currentTarget;
+                originalWidth.current = sidebarWidth;
+                originalClientX.current = e.clientX;
+                setIsDragging(true);
+
+                const onPointerMove = (e: MouseEvent) => {
+                  const newNum = Math.floor(newClamp(originalWidth.current + e.clientX - originalClientX.current, 320, 440));
+                  setSidebarWidth(newNum)
+                }
+
+                const onPointerUp = () => {
+                  ownerDocument.removeEventListener('pointermove', onPointerMove);
+                  setIsDragging(false);
+                }
+
+                ownerDocument.addEventListener('pointermove', onPointerMove);
+                ownerDocument.addEventListener('pointerup', onPointerUp, { once: true });
+              }}
+            />
+          </aside>
+
+          {/* Canvas */}
           <div
             className={clsx(
-              'absolute w-0.5 z-10 right-0 grow-0 top-0 bottom-0 cursor-col-resize',
-              isDragging ? 'bg-nodeforge-amber' : 'bg-slate-400',
+              'h-full',
+              isDragging ? 'transition-none' : 'transition-all ease-[cubic-bezier(0.165,0.84,0.44,1)] duration-300'
             )}
-            onMouseDown={(e: React.MouseEvent) => {
-              e.preventDefault();
-              const { ownerDocument } = e.currentTarget;
-              originalWidth.current = sidebarWidth;
-              originalClientX.current = e.clientX;
-              setIsDragging(true);
-
-              const onPointerMove = (e: MouseEvent) => {
-                const newNum = Math.floor(newClamp(originalWidth.current + e.clientX - originalClientX.current, 320, 440));
-                setSidebarWidth(newNum)
-              }
-
-              const onPointerUp = () => {
-                ownerDocument.removeEventListener('pointermove', onPointerMove);
-                setIsDragging(false);
-              }
-
-              ownerDocument.addEventListener('pointermove', onPointerMove);
-              ownerDocument.addEventListener('pointerup', onPointerUp, { once: true });
-            }}
-          />
-        </aside>
-
-        {/* Canvas */}
-        <div
-          className={clsx(
-            'h-full',
-            isDragging ? 'transition-none' : 'transition-all ease-[cubic-bezier(0.165,0.84,0.44,1)] duration-300'
-          )}
-          style={{ paddingLeft: openSidebar ? sidebarWidth : 0 }}
-        >
-          <Canvas />
+            style={{ paddingLeft: openSidebar ? sidebarWidth : 0 }}
+          >
+            <Canvas />
+          </div>
         </div>
       </div>
-    </div>
+    </VisualiserContext.Provider>
   )
 }
 
