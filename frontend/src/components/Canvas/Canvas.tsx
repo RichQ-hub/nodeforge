@@ -3,18 +3,13 @@
 import { Circle, Rect } from '@svgdotjs/svg.js';
 import { mat3, vec2 } from 'gl-matrix';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-
-type Point = {
-  x: number,
-  y: number
-}
+import CanvasInfoTip from './CanvasInfoTip';
 
 const ORIGIN = Object.freeze({ x: 0, y: 0 });
 
 const Canvas = () => {
   const canvasRef = useRef<SVGSVGElement | null>(null);
   const isMouseDown = useRef<boolean>(false);
-  const [mousePos, setMousePos] = useState<Point>(ORIGIN);
   const [transformMatrix, setTransformMatrix] = useState<mat3>(mat3.create());
 
   // Origin in viewport pixel coordinates.
@@ -23,38 +18,6 @@ const Canvas = () => {
     height: 0,
     width: 0
   });
-
-  /**
-   * Tracks mouse position in the viewport.
-   */
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      e.preventDefault();
-      setMousePos({ x: e.clientX, y: e.clientY });
-    }
-
-    window.addEventListener('mousemove', handleMouseMove);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    }
-  }, []);
-
-  /**
-   * Sets the viewport coordinate of the top-left corner of the canvas.
-   */
-  // useEffect(() => {
-  //   if (!canvasRef.current) {
-  //     return;
-  //   }
-  //   const canvasBoundingRect = canvasRef.current.getBoundingClientRect();
-  //   setCanvasOrigin(vec2.fromValues(canvasBoundingRect.left, canvasBoundingRect.top));
-
-  //   setCanvasDimensions({
-  //     height: canvasBoundingRect.height,
-  //     width: canvasBoundingRect.width
-  //   });
-  // }, []);
 
   useEffect(() => {
     if (!canvasRef.current) {
@@ -241,12 +204,12 @@ const Canvas = () => {
         viewBox={`${transformMatrix[6]} ${transformMatrix[7]} ${canvasDimensions.width / transformMatrix[0]} ${canvasDimensions.height / transformMatrix[4]}`}
       >
       </svg>
-      <div className='absolute top-0 right-0'>
-        <p>Mouse Pos: [x: {mousePos.x}, y: {mousePos.y}]</p>
-        <p>Canvas Origin: [x: {canvasOrigin[0]}, y: {canvasOrigin[1]}]</p>
-        <p>Scale: {transformMatrix[0]}</p>
-        <p>Dimensions: [w: {canvasDimensions.width}, h: {canvasDimensions.height}]</p>
-      </div>
+      
+      <CanvasInfoTip
+        dimensions={canvasDimensions}
+        origin={canvasOrigin}
+        matrix={transformMatrix}
+      />
     </div>
   )
 }

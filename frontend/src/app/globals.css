@@ -20,6 +20,7 @@
   --color-nodeforge-aqua: #11CCFB;
   --color-nodeforge-fuchsia: #DE24FF;
   --color-nodeforge-bone: #F1F2F7;
+  --color-nodeforge-code-blue: #21C6FE;
 }
 
 @layer utilities {
