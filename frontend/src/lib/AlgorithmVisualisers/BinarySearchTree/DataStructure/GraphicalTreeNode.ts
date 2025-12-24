@@ -9,20 +9,21 @@ export interface SVGData {
   // rightChildMarker: Marker;
 }
 
-export interface NodeCoordinates {
-  x: number;
-  y: number;
-}
-
 class GraphicalTreeNode {
-  private _coordinates: NodeCoordinates;
+  public static NODE_RADIUS: number = 30;
+  public static INITIAL_LINE_OFFSET_X = 500;
+
+  private _x: number;
+  private _y: number;
+
   private _value: number;
   private _leftChild: GraphicalTreeNode | null;
   private _rightChild: GraphicalTreeNode | null;
   private _svgData: SVGData;
 
-  public constructor(nodeCoordinates: NodeCoordinates, value: number, svgData: SVGData) {
-    this._coordinates = nodeCoordinates;
+  public constructor(value: number, svgData: SVGData) {
+    this._x = 0;
+    this._y = 0;
     this._value = value;
     this._svgData = svgData;
     this._leftChild = null;
@@ -34,7 +35,7 @@ class GraphicalTreeNode {
   // ==============================================================================
 
   public static createNode(value: number): GraphicalTreeNode {
-    const shape = new Circle().radius(30).attr({
+    const shape = new Circle().radius(this.NODE_RADIUS).attr({
       fill: '#D6E7F9',
       stroke: '#0285BD',
       'stroke-width': 2,
@@ -67,7 +68,6 @@ class GraphicalTreeNode {
       });
 
     return new GraphicalTreeNode(
-      { x: 0, y: 0},
       value,
       {
         shape,
@@ -82,11 +82,18 @@ class GraphicalTreeNode {
   // Getters and Setters.
   // ==============================================================================
 
-  public get coordinates(): NodeCoordinates {
-    return this._coordinates;
+  public get x(): number {
+    return this._x;
   }
-  public set coordinates(value: NodeCoordinates) {
-    this._coordinates = value;
+  public set x(value: number) {
+    this._x = value;
+  }
+
+  public get y(): number {
+    return this._y;
+  }
+  public set y(value: number) {
+    this._y = value;
   }
 
   public get value(): number {

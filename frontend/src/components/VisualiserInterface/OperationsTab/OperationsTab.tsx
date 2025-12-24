@@ -29,6 +29,18 @@ const OperationsTab = () => {
     console.log(`ArgLength = ${inputs.length}`);
   }, [selectedOperation]);
 
+  const clearInputs = () => {
+    const newInputs = inputs.slice();
+    newInputs.fill(0);
+    setInputs(newInputs);
+  }
+
+  const executeOperation = () => {
+    // TODO: Should return an error.
+    controller.runOperation(selectedOperation, ...inputs);
+    clearInputs();
+  }
+
   return (
     <motion.div
       variants={listVariants}
@@ -62,7 +74,7 @@ const OperationsTab = () => {
           className='ml-4 rounded-3xl border border-white/15 bg-nodeforge-brand p-3 cursor-pointer'
           type='button'
           onClick={() => {
-            controller.runOperation(selectedOperation, ...inputs);
+            executeOperation();
           }}
         >
           <Image className='h-full w-full' src={playIcon} alt='' />
@@ -81,6 +93,7 @@ const OperationsTab = () => {
                   type={arg.inputType}
                   id={arg.name}
                   placeholder={arg.placeholder}
+                  value={inputs[idx]}
                   onChange={(e) => {
                     e.preventDefault();
                     setInputs(prev => {
@@ -88,6 +101,11 @@ const OperationsTab = () => {
                       newInputs[idx] = Number(e.target.value);
                       return newInputs;
                     });
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      executeOperation();
+                    }
                   }}
                 />
               </React.Fragment>

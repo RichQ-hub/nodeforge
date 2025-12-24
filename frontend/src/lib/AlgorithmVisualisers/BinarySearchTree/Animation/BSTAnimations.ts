@@ -28,17 +28,11 @@ class BSTAnimations {
     svgData.leftChildLine.addTo(this.canvasId);
     svgData.rightChildLine.addTo(this.canvasId);
 
-    const x = node.coordinates.x;
-    const y = node.coordinates.y;
+    const x = node.x;
+    const y = node.y;
 
     svgData.shape.center(x, y);
     svgData.text.center(x, y);
-
-    const leftLineCoords = getPointerStartEndCoordinates(x, y, x - 300, y + 100, 30);
-    svgData.leftChildLine.plot(leftLineCoords);
-
-    const rightLineCoords = getPointerStartEndCoordinates(x, y, x + 300, y + 100, 30);
-    svgData.rightChildLine.plot(rightLineCoords);
 
     sequence.push(svgData.shape.animate(600).attr({
       opacity: 1
@@ -49,6 +43,19 @@ class BSTAnimations {
     }));
 
     return sequence;
+  }
+
+  /**
+   * Sets the correct line endpoints between the node and its child.
+   * @param node 
+   * @param child 
+   * @param line The line connecting the 2 nodes.
+   * @returns 
+   */
+  public plotNodeLine(node: GraphicalTreeNode, child: GraphicalTreeNode, line: Line) {
+    const lineCoords = getPointerStartEndCoordinates(node.x, node.y, child.x, child.y, GraphicalTreeNode.NODE_RADIUS);
+    line.plot(lineCoords);
+    return this.revealLine(line);
   }
 
   public unhighlightBST(root: GraphicalTreeNode): Runner[] {
@@ -76,8 +83,8 @@ class BSTAnimations {
     const svgData = node.svgData;
 
     sequence.push(svgData.shape.animate(600).attr({
-      fill: '#01CF68',
-      stroke: '#00A547',
+      fill: '#F71B1F',
+      stroke: '#C00003',
     }));
 
     sequence.push(svgData.text.animate(600).attr({
@@ -92,11 +99,11 @@ class BSTAnimations {
     const svgData = node.svgData;
 
     sequence.push(svgData.shape.animate(600).attr({
-      stroke: '#00A547',
+      stroke: '#C00003',
     }));
 
     sequence.push(svgData.text.animate(600).attr({
-      fill: '#00A547'
+      fill: '#C00003'
     }));
 
     return sequence;
@@ -132,7 +139,7 @@ class BSTAnimations {
     const sequence: Runner[] = [];
 
     sequence.push(line.animate(600).attr({
-      stroke: '#00A547',
+      stroke: '#C00003',
     }));
 
     return sequence;

@@ -12,14 +12,13 @@ interface IDataStructure {
 
 abstract class GraphicalDataStructure implements IDataStructure {
   protected _operations: Map<string, OperationUsage> = new Map();
-  protected _selectedOperation = '';
 
-  protected _codeLines: GraphicalCodeLine[];
+  private _codeLines: GraphicalCodeLine[];
   protected _codeAnimationLibrary: CodeAnimations;
 
   public constructor() {
     this._codeLines = [];
-    this._codeAnimationLibrary = new CodeAnimations();
+    this._codeAnimationLibrary = new CodeAnimations(this);
   }
 
   public abstract registerOperations(): void;
@@ -84,6 +83,16 @@ abstract class GraphicalDataStructure implements IDataStructure {
   public clearCodeCanvas(): void {
     this._codeLines = [];
     SVG(CODE_CANVAS_ID).clear();
+  }
+
+
+
+
+  public get codeLines(): GraphicalCodeLine[] {
+    return this._codeLines;
+  }
+  public set codeLines(value: GraphicalCodeLine[]) {
+    this._codeLines = value;
   }
 }
 

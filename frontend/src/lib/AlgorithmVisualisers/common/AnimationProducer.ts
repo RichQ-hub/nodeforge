@@ -13,15 +13,27 @@ class AnimationProducer {
    */
   private _currentSequence: Runner[] = [];
 
-  public constructor() {
+  public constructor() {}
 
+  /**
+   * Adds a complete sequence of animation runners for a single animation step.
+   * @param animations
+   */
+  public addAnimationStep(animations: Runner[]): void {
+    this._currentSequence.push(...animations);
+    this.finishSequence();
   }
 
-  public addSequenceAnimation(animation: Runner) {
+  public addMultipleAnimationStep(...animations: Runner[]): void {
+    this._currentSequence.push(...animations);
+    this.finishSequence();
+  }
+
+  public addSequenceAnimation(animation: Runner): void {
     this._currentSequence.push(animation);
   }
 
-  public addMultipleSequenceAnimations(animations: Runner[]) {
+  public addMultipleSequenceAnimations(animations: Runner[]): void {
     this._currentSequence.push(...animations);
   }
 

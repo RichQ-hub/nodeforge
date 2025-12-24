@@ -46,6 +46,7 @@ class VisualiserController {
   }
 
   public constructTimeline(animationProducer: AnimationProducer): void {
+    this.finishTimeline();
     animationProducer.animationSteps.forEach((step) => {
       step.runners.forEach((run) => {
         this._timeline.schedule(run, this._timelineDuration + 25, 'absolute');
@@ -69,6 +70,10 @@ class VisualiserController {
 
   public pauseTimeline() {
     this._timeline.pause();
+  }
+
+  public finishTimeline() {
+    this._timeline.finish();
   }
 
   public clearVisualiserCanvas(): void {

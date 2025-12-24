@@ -6,6 +6,7 @@ import BSTAnimations from "./BSTAnimations";
 import { deleteCode, insertCode } from "./CodeSnippets";
 
 class GraphicalBST extends GraphicalDataStructure {
+  public static MAX_DEPTH = 8;
   private _bstAnimationLibrary: BSTAnimations;
   private _root: GraphicalTreeNode | null;
 
@@ -58,91 +59,117 @@ class GraphicalBST extends GraphicalDataStructure {
 
     if (this._root === null) {
       this._root = GraphicalTreeNode.createNode(value);
-      this._root.coordinates = {
-        x: 500,
-        y: 40,
-      }
+      this._root.x = 500;
+      this._root.y = 40;
 
       // Draw and highlight newly added node.
-      animationProducer.addMultipleSequenceAnimations(
-        this._bstAnimationLibrary.drawNode(this._root)
+      animationProducer.addMultipleAnimationStep(
+        ...this._bstAnimationLibrary.drawNode(this._root),
+        ...this._codeAnimationLibrary.highlightCode(this.codeLines[2])
       )
-      animationProducer.finishSequence();
 
-      animationProducer.addMultipleSequenceAnimations(
+      animationProducer.addAnimationStep(
         this._bstAnimationLibrary.highlightNode(this._root)
       )
-      animationProducer.finishSequence();
 
-      animationProducer.addMultipleSequenceAnimations(
+      animationProducer.addAnimationStep(
         this._bstAnimationLibrary.unhighlightBST(this._root)
       )
-      animationProducer.finishSequence();
+
     } else {
-      this.doInsert(this._root, value, animationProducer);
+      this.doInsert(this._root, value, 0, animationProducer);
 
       // Unhighlight the entire tree once done.
-      animationProducer.addMultipleSequenceAnimations(
-        this._bstAnimationLibrary.unhighlightBST(this._root)
+      animationProducer.addMultipleAnimationStep(
+        ...this._bstAnimationLibrary.unhighlightBST(this._root),
+        ...this._codeAnimationLibrary.highlightCode(this.codeLines[8])
       )
-      animationProducer.finishSequence();
     }
 
     return animationProducer;
   }
 
-  public doInsert(node: GraphicalTreeNode, value: number, animationProducer: AnimationProducer) {
-    if (value === node.value) {
+  public doInsert(node: GraphicalTreeNode, value: number, depth: number, animationProducer: AnimationProducer) {
+    if (depth > GraphicalBST.MAX_DEPTH) {
+      console.log('Reached Max Depth');
+      return;
+    } else if (value === node.value) {
       // Node already exists, so we end recursion.
-      animationProducer.addMultipleSequenceAnimations(
+      animationProducer.addAnimationStep(
         this._bstAnimationLibrary.highlightNode(node)
       )
-      animationProducer.finishSequence();
 
-      animationProducer.addMultipleSequenceAnimations(
+      animationProducer.addAnimationStep(
         this._bstAnimationLibrary.unhighlightNode(node)
       )
-      animationProducer.finishSequence();
     } else if (value < node.value) {
       // TODO: TEST FOR NOW.
-      animationProducer.addMultipleSequenceAnimations(
-        this._bstAnimationLibrary.halfHighlightNode(node)
+      animationProducer.addMultipleAnimationStep(
+        ...this._bstAnimationLibrary.halfHighlightNode(node),
+        ...this._codeAnimationLibrary.highlightCode(this.codeLines[4])
       )
-      animationProducer.finishSequence();
 
-      animationProducer.addMultipleSequenceAnimations(
-        this._bstAnimationLibrary.highlightLine(node.svgData.leftChildLine)
+      animationProducer.addMultipleAnimationStep(
+        ...this._bstAnimationLibrary.highlightLine(node.svgData.leftChildLine),
+        ...this._codeAnimationLibrary.highlightCode(this.codeLines[5])
       )
-      animationProducer.finishSequence();
 
       // We can insert.
       if (node.leftChild === null) {
         node.leftChild = GraphicalTreeNode.createNode(value);
         // TODO: Find better way to dynamically set node coords based on depth.
-        node.leftChild.coordinates = {
-          x: node.coordinates.x - 300,
-          y: node.coordinates.y + 100,
-        }
+        node.leftChild.x = node.x - GraphicalTreeNode.INITIAL_LINE_OFFSET_X / (2 ** depth);
+        node.leftChild.y = node.y + 100;
 
-        animationProducer.addMultipleSequenceAnimations(
-          this._bstAnimationLibrary.revealLine(node.svgData.leftChildLine)
+        animationProducer.addAnimationStep(
+          this._bstAnimationLibrary.plotNodeLine(node, node.leftChild, node.svgData.leftChildLine)
         )
-        animationProducer.finishSequence();
 
-        animationProducer.addMultipleSequenceAnimations(
-          this._bstAnimationLibrary.drawNode(node.leftChild)
+        animationProducer.addMultipleAnimationStep(
+          ...this._bstAnimationLibrary.drawNode(node.leftChild),
+          ...this._codeAnimationLibrary.highlightCode(this.codeLines[2])
         )
-        animationProducer.finishSequence();
 
-        animationProducer.addMultipleSequenceAnimations(
+        animationProducer.addAnimationStep(
           this._bstAnimationLibrary.highlightNode(node.leftChild)
         )
-        animationProducer.finishSequence();
       } else {
-        this.doInsert(node.leftChild, value, animationProducer);
+        this.doInsert(node.leftChild, value, depth + 1, animationProducer);
       }
     } else if (value > node.value) {
+      // TODO: TEST FOR NOW.
+      animationProducer.addMultipleAnimationStep(
+        ...this._bstAnimationLibrary.halfHighlightNode(node),
+        ...this._codeAnimationLibrary.highlightCode(this.codeLines[6])
+      )
 
+      animationProducer.addMultipleAnimationStep(
+        ...this._bstAnimationLibrary.highlightLine(node.svgData.rightChildLine),
+        ...this._codeAnimationLibrary.highlightCode(this.codeLines[7])
+      )
+
+      // We can insert.
+      if (node.rightChild === null) {
+        node.rightChild = GraphicalTreeNode.createNode(value);
+        // TODO: Find better way to dynamically set node coords based on depth.
+        node.rightChild.x = node.x + GraphicalTreeNode.INITIAL_LINE_OFFSET_X / (2 ** depth);
+        node.rightChild.y = node.y + 100;
+
+        animationProducer.addAnimationStep(
+          this._bstAnimationLibrary.plotNodeLine(node, node.rightChild, node.svgData.rightChildLine)
+        )
+
+        animationProducer.addMultipleAnimationStep(
+          ...this._bstAnimationLibrary.drawNode(node.rightChild),
+          ...this._codeAnimationLibrary.highlightCode(this.codeLines[2])
+        )
+
+        animationProducer.addAnimationStep(
+          this._bstAnimationLibrary.highlightNode(node.rightChild)
+        )
+      } else {
+        this.doInsert(node.rightChild, value, depth + 1, animationProducer);
+      }
     }
   }
 
