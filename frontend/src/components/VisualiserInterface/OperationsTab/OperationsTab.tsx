@@ -13,6 +13,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import SelectOperationBtn from './SelectOperationBtn';
 import { listItemVariants, listVariants } from '@/lib/framerVariants';
 import VisualiserContext from '@/context/VisualiserContext';
+import { Tooltip } from 'react-tooltip';
 
 const OperationsTab = () => {
   const { controller } = useContext(VisualiserContext);
@@ -69,6 +70,7 @@ const OperationsTab = () => {
 
         {/* Play Algorithm Button */}
         <motion.button
+          data-tooltip-id='play-algo'
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.9 }}
           className='ml-4 rounded-3xl border border-white/15 bg-nodeforge-brand p-3 cursor-pointer'
@@ -79,6 +81,7 @@ const OperationsTab = () => {
         >
           <Image className='h-full w-full' src={playIcon} alt='' />
         </motion.button>
+        <Tooltip id='play-algo' content='Play Operation' place='top' />
       </motion.div>
 
       {/* Operation Inputs Menu */}

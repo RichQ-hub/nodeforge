@@ -1,22 +1,28 @@
 import clsx from 'clsx';
 import Image from 'next/image';
+import { Tooltip } from 'react-tooltip';
 
 const CanvasSidebarIcon = ({
+  name,
+  tooltipContent,
   src,
   selectedTab,
   idx,
   flip,
   handleClick,
 }: {
+  name: string;
+  tooltipContent: string;
   src: any;
   selectedTab?: number;
-  idx?: number;
+  idx: number;
   flip?: boolean;
   handleClick?: () => void;
 }) => {
   return (
-    <button
-      type='button'
+    <a
+      // type='button'
+      data-tooltip-id={`tooltip-sidebar-${name}`}
       className={clsx(
         `relative py-3 w-full flex justify-center hover:cursor-pointer after:absolute after:right-0 after:top-0 after:bottom-0
         after:w-0.5 after:bg-white after:scale-y-0 after:transition-transform after:duration-200 after:ease-in-out hover:after:scale-y-100 opacity-50 hover:opacity-100`,
@@ -36,7 +42,13 @@ const CanvasSidebarIcon = ({
         src={src}
         alt=''
       />
-    </button>
+
+      <Tooltip
+        id={`tooltip-sidebar-${name}`}
+        place='right'
+        content={tooltipContent}
+      />
+    </a>
   )
 }
 

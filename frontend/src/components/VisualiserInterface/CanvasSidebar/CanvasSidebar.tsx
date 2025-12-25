@@ -30,6 +30,8 @@ const CanvasSidebar = ({
       >
         <CanvasSidebarIcon
           src={sidebarExpandIcon}
+          name={'Sidebar Toggle'}
+          tooltipContent={openSidebar ? 'Collapse Sidebar' : 'Expand Sidebar'}
           handleClick={() => setOpenSidebar(!openSidebar)}
           idx={0}
           flip={openSidebar}
@@ -42,6 +44,8 @@ const CanvasSidebar = ({
           return (
             <CanvasSidebarIcon
               key={tab.name}
+              name={tab.name}
+              tooltipContent={tab.name}
               selectedTab={selectedTab}
               idx={idx}
               src={tab.icon}
@@ -56,8 +60,18 @@ const CanvasSidebar = ({
 
       {/* Settings Section */}
       <div className='py-3 mt-auto'>
-        <CanvasSidebarIcon src={guideIcon} idx={0} />
-        <CanvasSidebarIcon src={darkModeIcon} idx={0} />
+        <CanvasSidebarIcon
+          name='Lecture Mode'
+          tooltipContent='Lecture Mode'
+          src={guideIcon}
+          idx={0}
+        />
+        <CanvasSidebarIcon
+          name='Dark Mode'
+          tooltipContent='Dark Mode'
+          src={darkModeIcon}
+          idx={0}
+        />
       </div>
     </aside>
   )
