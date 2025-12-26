@@ -12,6 +12,7 @@ export interface SVGData {
 class GraphicalTreeNode {
   public static NODE_RADIUS: number = 30;
   public static INITIAL_LINE_OFFSET_X = 500;
+  public static LINE_OFFSET_Y = 100;
 
   private _x: number;
   private _y: number;
@@ -76,6 +77,10 @@ class GraphicalTreeNode {
         rightChildLine: rightLine,
       }
     );
+  }
+
+  public static getChildOffsetX(depth: number): number {
+    return this.INITIAL_LINE_OFFSET_X / (2 ** depth);
   }
 
   // ==============================================================================

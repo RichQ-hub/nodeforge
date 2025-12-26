@@ -5,11 +5,11 @@ interface AnimationRunner {
 }
 
 class AnimationProducer {
-  private _animationSteps: AnimationRunner[] = [];
+  private _animationSequences: AnimationRunner[] = [];
 
   /**
    * Represents all the animation that are to run concurrently in a
-   * single animation step.
+   * single animation sequence.
    */
   private _currentSequence: Runner[] = [];
 
@@ -19,27 +19,18 @@ class AnimationProducer {
    * Adds a complete sequence of animation runners for a single animation step.
    * @param animations
    */
-  public addAnimationStep(animations: Runner[]): void {
+  public addCompleteSequence(...animations: Runner[]): void {
     this._currentSequence.push(...animations);
     this.finishSequence();
   }
 
-  public addMultipleAnimationStep(...animations: Runner[]): void {
-    this._currentSequence.push(...animations);
-    this.finishSequence();
-  }
-
-  public addSequenceAnimation(animation: Runner): void {
-    this._currentSequence.push(animation);
-  }
-
-  public addMultipleSequenceAnimations(animations: Runner[]): void {
+  public addSequenceSteps(...animations: Runner[]): void {
     this._currentSequence.push(...animations);
   }
 
   public finishSequence() {
     if (this.currentSequence.length > 0) {
-      this.animationSteps.push({
+      this._animationSequences.push({
         runners: this.currentSequence
       })
     }
@@ -51,11 +42,11 @@ class AnimationProducer {
   // Getters and Setters.
   // ==============================================================================
   
-  public get animationSteps(): AnimationRunner[] {
-    return this._animationSteps;
+  public get animationSequences(): AnimationRunner[] {
+    return this._animationSequences;
   }
-  public set animationSteps(value: AnimationRunner[]) {
-    this._animationSteps = value;
+  public set animationSequences(value: AnimationRunner[]) {
+    this._animationSequences = value;
   }
 
   public get currentSequence(): Runner[] {

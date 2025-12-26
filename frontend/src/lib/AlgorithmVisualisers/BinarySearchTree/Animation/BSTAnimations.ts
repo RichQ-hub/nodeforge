@@ -19,7 +19,10 @@ class BSTAnimations {
    * @param x 
    * @param y 
    */
-  public drawNode(node: GraphicalTreeNode): Runner[] {
+  public drawNode(node: GraphicalTreeNode | null): Runner[] {
+    if (node === null) {
+      return [];
+    }
     const sequence: Runner[] = [];
     const svgData = node.svgData;
 
@@ -42,6 +45,9 @@ class BSTAnimations {
       opacity: 1
     }));
 
+    // Automatically highlight node when inserted.
+    sequence.push(...this.highlightNode(node));
+
     return sequence;
   }
 
@@ -52,13 +58,21 @@ class BSTAnimations {
    * @param line The line connecting the 2 nodes.
    * @returns 
    */
-  public plotNodeLine(node: GraphicalTreeNode, child: GraphicalTreeNode, line: Line) {
-    const lineCoords = getPointerStartEndCoordinates(node.x, node.y, child.x, child.y, GraphicalTreeNode.NODE_RADIUS);
-    line.plot(lineCoords);
-    return this.revealLine(line);
+  public plotNodeLine(node: GraphicalTreeNode | null, child: GraphicalTreeNode | null, line: Line): Runner[] {
+    if (node === null || child === null) {
+      return [];
+    }
+    const sequence: Runner[] = [];
+    const lineCoords = getPointerStartEndCoordinates(node.x, node.y, child.x, child.y);
+    sequence.push(line.animate(600).plot(lineCoords));
+    sequence.push(...this.revealLine(line));
+    return sequence;
   }
 
-  public unhighlightBST(root: GraphicalTreeNode): Runner[] {
+  public unhighlightBST(root: GraphicalTreeNode | null): Runner[] {
+    if (root === null) {
+      return [];
+    }
     const sequence: Runner[] = [];
     this.recurseUnlighlightBST(root, sequence);
     return sequence;
@@ -76,6 +90,90 @@ class BSTAnimations {
     );
     this.recurseUnlighlightBST(node.leftChild, sequence);
     this.recurseUnlighlightBST(node.rightChild, sequence);
+  }
+
+  public freeNode(
+    node: GraphicalTreeNode | null,
+    parent: GraphicalTreeNode | null,
+    hideParentLine: boolean = false
+  ): Runner[] {
+    if (node === null) {
+      return [];
+    }
+
+    const sequence: Runner[] = [];
+  
+    if (parent !== null && hideParentLine) {
+      if (parent.leftChild === node) {
+        sequence.push(parent.svgData.leftChildLine.animate(600).attr({
+          opacity: 0,
+        }));
+      } else {
+        sequence.push(parent.svgData.rightChildLine.animate(600).attr({
+          opacity: 0,
+        }));
+      }
+    }
+
+    sequence.push(node.svgData.shape.animate(600).attr({
+      opacity: 0,
+    }));
+    sequence.push(node.svgData.text.animate(600).attr({
+      opacity: 0,
+    }))
+    sequence.push(node.svgData.rightChildLine.animate(600).attr({
+      opacity: 0,
+    }))
+    sequence.push(node.svgData.leftChildLine.animate(600).attr({
+      opacity: 0,
+    }))
+
+    return sequence;
+  }
+
+  /**
+   * Repositions changed node positions to their correct coordinates on the canvas.
+   * @param node 
+   * @param depth 
+   */
+  public fixBST(root: GraphicalTreeNode | null, depth: number): Runner[] {
+    if (root === null) {
+      return [];
+    }
+
+    const sequence: Runner[] = [];
+
+    /**
+     * Internal Recursive function.
+     * @param curr 
+     * @param currDepth 
+     * @returns 
+     */
+    const doFixBST = (curr: GraphicalTreeNode | null, currDepth: number) => {
+      if (curr === null) {
+        return;
+      }
+
+      sequence.push(curr.svgData.shape.animate(600).center(curr.x, curr.y));
+      sequence.push(curr.svgData.text.animate(600).center(curr.x, curr.y));
+
+      // Fix left line.
+      sequence.push(
+        ...this.plotNodeLine(curr, curr.leftChild, curr.svgData.leftChildLine)
+      );
+
+      // Fix right line.
+      sequence.push(
+        ...this.plotNodeLine(curr, curr.rightChild, curr.svgData.rightChildLine)
+      );
+
+      doFixBST(curr.leftChild, currDepth + 1);
+      doFixBST(curr.rightChild, currDepth + 1);
+    }
+
+    doFixBST(root, depth);
+
+    return sequence;
   }
 
   public highlightNode(node: GraphicalTreeNode): Runner[] {
@@ -130,6 +228,16 @@ class BSTAnimations {
     
     sequence.push(line.animate(600).attr({
       opacity: 1
+    }));
+
+    return sequence;
+  }
+
+  public hideLine(line: Line): Runner[] {
+    const sequence: Runner[] = [];
+    
+    sequence.push(line.animate(600).attr({
+      opacity: 0
     }));
 
     return sequence;

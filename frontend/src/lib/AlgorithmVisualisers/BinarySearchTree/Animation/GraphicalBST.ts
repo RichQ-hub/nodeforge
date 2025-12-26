@@ -51,6 +51,53 @@ class GraphicalBST extends GraphicalDataStructure {
   }
 
   // ==============================================================================
+  // Helpers.
+  // ==============================================================================
+
+  public addAnimationWithCodeHighlight(
+    animationProducer: AnimationProducer,
+    lineNum: number,
+    animationFn: any,
+    ...args: any[]
+  ) {
+    animationProducer.addCompleteSequence(
+      ...this._codeAnimationLibrary.highlightCode(this.codeLines[lineNum]),
+      ...animationFn.apply(this, ...args),
+    )
+  }
+
+  public updateNodePositions(root: GraphicalTreeNode | null): void {
+    if (root === null) {
+      return;
+    }
+    
+    const doUpdate = (curr: GraphicalTreeNode | null, depth: number, newX: number, newY: number) => {
+      if (curr === null) {
+        return;
+      } 
+      
+      curr.x = newX;
+      curr.y = newY;
+
+      doUpdate(
+        curr.leftChild,
+        depth + 1,
+        curr.x - GraphicalTreeNode.getChildOffsetX(depth),
+        curr.y + GraphicalTreeNode.LINE_OFFSET_Y
+      );
+
+      doUpdate(
+        curr.rightChild,
+        depth + 1,
+        curr.x + GraphicalTreeNode.getChildOffsetX(depth),
+        curr.y + GraphicalTreeNode.LINE_OFFSET_Y
+      );
+    }
+
+    doUpdate(root, 0, root.x, root.y);
+  }
+
+  // ==============================================================================
   // Methods
   // ==============================================================================
 
@@ -63,120 +110,249 @@ class GraphicalBST extends GraphicalDataStructure {
       this._root.y = 40;
 
       // Draw and highlight newly added node.
-      animationProducer.addMultipleAnimationStep(
-        ...this._bstAnimationLibrary.drawNode(this._root),
-        ...this._codeAnimationLibrary.highlightCode(this.codeLines[2])
+      // this.addAnimationWithCodeHighlight(
+      //   animationProducer,
+      //   2,
+      //   this._bstAnimationLibrary.drawNode,
+      //   this._root
+      // );
+      animationProducer.addCompleteSequence(
+        ...this._bstAnimationLibrary.drawNode(this._root)
       )
 
-      animationProducer.addAnimationStep(
-        this._bstAnimationLibrary.highlightNode(this._root)
-      )
-
-      animationProducer.addAnimationStep(
-        this._bstAnimationLibrary.unhighlightBST(this._root)
+      animationProducer.addCompleteSequence(
+        ...this._bstAnimationLibrary.unhighlightBST(this._root)
       )
 
     } else {
       this.doInsert(this._root, value, 0, animationProducer);
 
       // Unhighlight the entire tree once done.
-      animationProducer.addMultipleAnimationStep(
-        ...this._bstAnimationLibrary.unhighlightBST(this._root),
-        ...this._codeAnimationLibrary.highlightCode(this.codeLines[8])
+      // this.addAnimationWithCodeHighlight(
+      //   animationProducer,
+      //   8,
+      //   this._bstAnimationLibrary.unhighlightBST,
+      //   this._root
+      // );
+      animationProducer.addCompleteSequence(
+        ...this._bstAnimationLibrary.unhighlightBST(this._root)
       )
     }
 
     return animationProducer;
   }
 
-  public doInsert(node: GraphicalTreeNode, value: number, depth: number, animationProducer: AnimationProducer) {
+  private doInsert(
+    node: GraphicalTreeNode,
+    value: number,
+    depth: number,
+    animationProducer: AnimationProducer
+  ): void {
     if (depth > GraphicalBST.MAX_DEPTH) {
       console.log('Reached Max Depth');
       return;
     } else if (value === node.value) {
       // Node already exists, so we end recursion.
-      animationProducer.addAnimationStep(
-        this._bstAnimationLibrary.highlightNode(node)
+      animationProducer.addCompleteSequence(
+        ...this._bstAnimationLibrary.highlightNode(node)
       )
 
-      animationProducer.addAnimationStep(
-        this._bstAnimationLibrary.unhighlightNode(node)
+      animationProducer.addCompleteSequence(
+        ...this._bstAnimationLibrary.unhighlightNode(node)
       )
     } else if (value < node.value) {
-      // TODO: TEST FOR NOW.
-      animationProducer.addMultipleAnimationStep(
-        ...this._bstAnimationLibrary.halfHighlightNode(node),
-        ...this._codeAnimationLibrary.highlightCode(this.codeLines[4])
-      )
+      // this.addAnimationWithCodeHighlight(
+      //   animationProducer,
+      //   4,
+      //   this._bstAnimationLibrary.halfHighlightNode,
+      //   node
+      // );
 
-      animationProducer.addMultipleAnimationStep(
-        ...this._bstAnimationLibrary.highlightLine(node.svgData.leftChildLine),
-        ...this._codeAnimationLibrary.highlightCode(this.codeLines[5])
+      // this.addAnimationWithCodeHighlight(
+      //   animationProducer,
+      //   5,
+      //   this._bstAnimationLibrary.highlightLine,
+      //   node.svgData.leftChildLine
+      // );
+      animationProducer.addCompleteSequence(
+        ...this._bstAnimationLibrary.halfHighlightNode(node)
+      )
+      animationProducer.addCompleteSequence(
+        ...this._bstAnimationLibrary.highlightLine(node.svgData.leftChildLine)
       )
 
       // We can insert.
       if (node.leftChild === null) {
         node.leftChild = GraphicalTreeNode.createNode(value);
         // TODO: Find better way to dynamically set node coords based on depth.
-        node.leftChild.x = node.x - GraphicalTreeNode.INITIAL_LINE_OFFSET_X / (2 ** depth);
-        node.leftChild.y = node.y + 100;
+        node.leftChild.x = node.x - GraphicalTreeNode.getChildOffsetX(depth);
+        node.leftChild.y = node.y + GraphicalTreeNode.LINE_OFFSET_Y;
 
-        animationProducer.addAnimationStep(
-          this._bstAnimationLibrary.plotNodeLine(node, node.leftChild, node.svgData.leftChildLine)
+        animationProducer.addCompleteSequence(
+          ...this._bstAnimationLibrary.plotNodeLine(node, node.leftChild, node.svgData.leftChildLine)
         )
 
-        animationProducer.addMultipleAnimationStep(
-          ...this._bstAnimationLibrary.drawNode(node.leftChild),
-          ...this._codeAnimationLibrary.highlightCode(this.codeLines[2])
-        )
-
-        animationProducer.addAnimationStep(
-          this._bstAnimationLibrary.highlightNode(node.leftChild)
+        // this.addAnimationWithCodeHighlight(
+        //   animationProducer,
+        //   2,
+        //   this._bstAnimationLibrary.drawNode,
+        //   node.leftChild
+        // );
+        animationProducer.addCompleteSequence(
+          ...this._bstAnimationLibrary.drawNode(node.leftChild)
         )
       } else {
         this.doInsert(node.leftChild, value, depth + 1, animationProducer);
       }
     } else if (value > node.value) {
-      // TODO: TEST FOR NOW.
-      animationProducer.addMultipleAnimationStep(
-        ...this._bstAnimationLibrary.halfHighlightNode(node),
-        ...this._codeAnimationLibrary.highlightCode(this.codeLines[6])
-      )
+      // this.addAnimationWithCodeHighlight(
+      //   animationProducer,
+      //   6,
+      //   this._bstAnimationLibrary.halfHighlightNode,
+      //   node
+      // );
 
-      animationProducer.addMultipleAnimationStep(
-        ...this._bstAnimationLibrary.highlightLine(node.svgData.rightChildLine),
-        ...this._codeAnimationLibrary.highlightCode(this.codeLines[7])
+      // this.addAnimationWithCodeHighlight(
+      //   animationProducer,
+      //   7,
+      //   this._bstAnimationLibrary.highlightLine,
+      //   node.svgData.rightChildLine
+      // );
+      animationProducer.addCompleteSequence(
+        ...this._bstAnimationLibrary.halfHighlightNode(node)
+      )
+      animationProducer.addCompleteSequence(
+        ...this._bstAnimationLibrary.highlightLine(node.svgData.rightChildLine)
       )
 
       // We can insert.
       if (node.rightChild === null) {
         node.rightChild = GraphicalTreeNode.createNode(value);
         // TODO: Find better way to dynamically set node coords based on depth.
-        node.rightChild.x = node.x + GraphicalTreeNode.INITIAL_LINE_OFFSET_X / (2 ** depth);
-        node.rightChild.y = node.y + 100;
+        node.rightChild.x = node.x + GraphicalTreeNode.getChildOffsetX(depth);
+        node.rightChild.y = node.y + GraphicalTreeNode.LINE_OFFSET_Y;
 
-        animationProducer.addAnimationStep(
-          this._bstAnimationLibrary.plotNodeLine(node, node.rightChild, node.svgData.rightChildLine)
+        animationProducer.addCompleteSequence(
+          ...this._bstAnimationLibrary.plotNodeLine(node, node.rightChild, node.svgData.rightChildLine)
         )
 
-        animationProducer.addMultipleAnimationStep(
-          ...this._bstAnimationLibrary.drawNode(node.rightChild),
-          ...this._codeAnimationLibrary.highlightCode(this.codeLines[2])
-        )
-
-        animationProducer.addAnimationStep(
-          this._bstAnimationLibrary.highlightNode(node.rightChild)
-        )
+        // this.addAnimationWithCodeHighlight(
+        //   animationProducer,
+        //   2,
+        //   this._bstAnimationLibrary.drawNode,
+        //   node.rightChild
+        // );
+        animationProducer.addCompleteSequence(
+        ...this._bstAnimationLibrary.drawNode(node.rightChild)
+      )
       } else {
         this.doInsert(node.rightChild, value, depth + 1, animationProducer);
       }
     }
   }
 
-
   public delete(value: number): AnimationProducer {
     const animationProducer = new AnimationProducer();
+    this._root = this.doDelete(this._root, null, value, animationProducer);
+    // Unhighlight the BST.
+    animationProducer.addCompleteSequence(
+      ...this._bstAnimationLibrary.unhighlightBST(this._root)
+    );
+    // Since the newRoot was assigned a new node (not null), we fix the BST
+    // with their new updated coordinates on the canvas.
+    this.updateNodePositions(this._root);
+    animationProducer.addCompleteSequence(
+      ...this._bstAnimationLibrary.fixBST(this._root, 0)
+    )
     return animationProducer;
+  }
+
+  private doDelete(
+    root: GraphicalTreeNode | null,
+    parent: GraphicalTreeNode | null,
+    value: number,
+    animationProducer: AnimationProducer
+  ): GraphicalTreeNode | null {
+    let newRoot: GraphicalTreeNode | null = root;
+
+    if (root !== null) {
+      if (value < root.value) {
+        root.leftChild = this.doDelete(root.leftChild, root, value, animationProducer);
+      } else if (value > root.value) {
+        root.rightChild = this.doDelete(root.rightChild, root, value, animationProducer);
+      } else {
+        // We found the node we want to delete.
+        if (root.leftChild === null && root.rightChild === null) {
+          // Case 1: No subtrees.
+          newRoot = null;
+
+          // Free the node.
+          animationProducer.addCompleteSequence(
+            ...this._bstAnimationLibrary.freeNode(root, parent, true)
+          )
+        } else {
+          if (root.leftChild === null) {
+            // Case 2: 1 subtree (right)
+            newRoot = root.rightChild;
+          } else if (root.rightChild === null) {
+            // Case 2: 1 subtree (left)
+            newRoot = root.leftChild;
+          } else {
+            // Case 3: Both subtrees exist for the curr node we want to delete.
+            newRoot = this.join(root.leftChild, root.rightChild, animationProducer);
+          }
+
+          // Free the node.
+          animationProducer.addCompleteSequence(
+            ...this._bstAnimationLibrary.freeNode(root, parent)
+          )
+        }
+      }
+    }
+
+    return newRoot;
+  }
+
+  public join(
+    root1: GraphicalTreeNode,
+    root2: GraphicalTreeNode,
+    animationProducer: AnimationProducer
+  ): GraphicalTreeNode {
+
+    // We find the bottom leftmost node in tree 2.
+    let curr = root2;
+    let parent = null;
+    while (curr.leftChild !== null) {
+      parent = curr;
+      curr = curr.leftChild
+    }
+
+    // Curr should now point to the bottom leftmost node.
+    if (parent !== null) {
+      parent.leftChild = curr.rightChild;
+
+      // If the curr.rightChild was null, we have to hide the parent's left child
+      // line since we have nothing to connect it to.
+      if (curr.rightChild === null) {
+        animationProducer.addCompleteSequence(
+          ...this._bstAnimationLibrary.hideLine(parent.svgData.leftChildLine)
+        );
+      }
+
+      animationProducer.addCompleteSequence(
+        ...this._bstAnimationLibrary.plotNodeLine(parent, curr.rightChild, parent.svgData.leftChildLine)
+      );
+      curr.rightChild = root2;
+      animationProducer.addCompleteSequence(
+      ...this._bstAnimationLibrary.plotNodeLine(curr, root2, curr.svgData.rightChildLine)
+    );
+    }
+    curr.leftChild = root1;
+
+    animationProducer.addCompleteSequence(
+      ...this._bstAnimationLibrary.plotNodeLine(curr, root1, curr.svgData.leftChildLine)
+    );
+    return curr;
   }
 
 }

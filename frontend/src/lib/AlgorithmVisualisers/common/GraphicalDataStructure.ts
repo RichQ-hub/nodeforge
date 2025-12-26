@@ -18,7 +18,7 @@ abstract class GraphicalDataStructure implements IDataStructure {
 
   public constructor() {
     this._codeLines = [];
-    this._codeAnimationLibrary = new CodeAnimations(this);
+    this._codeAnimationLibrary = new CodeAnimations();
   }
 
   public abstract registerOperations(): void;
@@ -84,9 +84,6 @@ abstract class GraphicalDataStructure implements IDataStructure {
     this._codeLines = [];
     SVG(CODE_CANVAS_ID).clear();
   }
-
-
-
 
   public get codeLines(): GraphicalCodeLine[] {
     return this._codeLines;

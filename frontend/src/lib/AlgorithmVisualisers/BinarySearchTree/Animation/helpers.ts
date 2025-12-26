@@ -1,3 +1,5 @@
+import GraphicalTreeNode from "../DataStructure/GraphicalTreeNode";
+
 /**
  * Calculates the starting and ending coordinates of a pointer, given the coordinates of the centres of the
  * originating nodes and target nodes.
@@ -10,8 +12,8 @@ export const getPointerStartEndCoordinates = (
   startCentreY: number,
   endCentreX: number,
   endCentreY: number,
-  nodeRadius: number,
 ): [[number, number], [number, number]] => {
+  const nodeRadius = GraphicalTreeNode.NODE_RADIUS;
   // Calculate the theta from the vertical shaft from the centre of the node. It 
   // essentially calculates the angle of direction from the source - target node.
   const theta: number = Math.atan(
