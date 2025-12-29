@@ -56,6 +56,18 @@ class GraphicalBST extends GraphicalDataStructure {
       codeSnippet: insertCode,
       run: this.search.bind(this),
     });
+    this._operations.set('Rotate Left', {
+      description: 'Rotates a tree to the left.',
+      args: [
+        {
+          name: 'Value',
+          placeholder: 'value',
+          inputType: 'number',
+        }
+      ],
+      codeSnippet: insertCode,
+      run: this.rotateLeft.bind(this),
+    });
   }
 
   public resetDataStructure(): void {
@@ -377,9 +389,13 @@ class GraphicalBST extends GraphicalDataStructure {
     return animationProducer;
   }
 
-  private doSearch(node: GraphicalTreeNode | null, value: number, animationProducer: AnimationProducer) {
+  private doSearch(
+    node: GraphicalTreeNode | null,
+    value: number,
+    animationProducer: AnimationProducer
+  ): GraphicalTreeNode | null {
     if (node === null) {
-      return;
+      return null;
     } 
     
     // We found the node.
@@ -387,7 +403,7 @@ class GraphicalBST extends GraphicalDataStructure {
       animationProducer.addCompleteSequence(
         ...this._bstAnimationLibrary.highlightNode(node)
       )
-      return;
+      return node;
     }
 
     // Look in the children.
@@ -398,13 +414,72 @@ class GraphicalBST extends GraphicalDataStructure {
       animationProducer.addCompleteSequence(
         ...this._bstAnimationLibrary.highlightLine(node.svgData.leftChildLine)
       )
-      this.doSearch(node.leftChild, value, animationProducer)
+      return this.doSearch(node.leftChild, value, animationProducer)
     } else if (value > node.value) {
       animationProducer.addCompleteSequence(
         ...this._bstAnimationLibrary.highlightLine(node.svgData.rightChildLine)
       )
-      this.doSearch(node.rightChild, value, animationProducer)
+      return this.doSearch(node.rightChild, value, animationProducer)
     }
+    return null;
+  }
+
+  public rotateLeft(value: number) {
+    const animationProducer = new AnimationProducer();
+    this._root = this.doRotateLeft(this._root, value, animationProducer);
+
+    animationProducer.addCompleteSequence(
+      ...this._bstAnimationLibrary.unhighlightBST(this._root)
+    );
+    // Since the newRoot was assigned a new node (not null), we fix the BST
+    // with their new updated coordinates on the canvas.
+    this.updateNodePositions(this._root);
+    animationProducer.addCompleteSequence(
+      ...this._bstAnimationLibrary.fixBST(this._root, 0)
+    )
+    return animationProducer;
+  }
+
+  private doRotateLeft(
+    curr: GraphicalTreeNode | null,
+    value: number,
+    animationProducer: AnimationProducer
+  ): GraphicalTreeNode | null {
+    if (curr === null) {
+      return null;
+    }
+
+    if (value === curr.value) {
+      // We found the node.
+      const newRoot = curr.rightChild;
+      if (newRoot === null) {
+        return curr;
+      }
+      curr.rightChild = newRoot.leftChild;
+      if (newRoot.leftChild === null) {
+        animationProducer.addCompleteSequence(
+          ...this._bstAnimationLibrary.hideLine(curr.svgData.rightChildLine)
+        )
+      }
+
+      animationProducer.addCompleteSequence(
+        ...this._bstAnimationLibrary.plotNodeLine(curr, newRoot.leftChild, curr.svgData.rightChildLine)
+      )
+
+      animationProducer.addCompleteSequence(
+        ...this._bstAnimationLibrary.plotNodeLine(newRoot, curr, newRoot.svgData.leftChildLine)
+      )
+
+      newRoot.leftChild = curr;
+
+      return newRoot;
+    } else if (value < curr.value) {
+      curr.leftChild = this.doRotateLeft(curr.leftChild, value, animationProducer);
+    } else if (value > curr.value) {
+      curr.rightChild =  this.doRotateLeft(curr.rightChild, value, animationProducer);
+    }
+
+    return curr;
   }
 
 }
