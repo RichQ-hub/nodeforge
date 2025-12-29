@@ -44,6 +44,18 @@ class GraphicalBST extends GraphicalDataStructure {
       codeSnippet: deleteCode,
       run: this.delete.bind(this),
     });
+    this._operations.set('Search', {
+      description: 'Searches the tree for the given value.',
+      args: [
+        {
+          name: 'Value',
+          placeholder: 'value',
+          inputType: 'number',
+        }
+      ],
+      codeSnippet: insertCode,
+      run: this.search.bind(this),
+    });
   }
 
   public resetDataStructure(): void {
@@ -353,6 +365,46 @@ class GraphicalBST extends GraphicalDataStructure {
       ...this._bstAnimationLibrary.plotNodeLine(curr, root1, curr.svgData.leftChildLine)
     );
     return curr;
+  }
+
+  public search(value: number): AnimationProducer {
+    const animationProducer = new AnimationProducer();
+    this.doSearch(this._root, value, animationProducer);
+
+    animationProducer.addCompleteSequence(
+      ...this._bstAnimationLibrary.unhighlightBST(this._root)
+    )
+    return animationProducer;
+  }
+
+  private doSearch(node: GraphicalTreeNode | null, value: number, animationProducer: AnimationProducer) {
+    if (node === null) {
+      return;
+    } 
+    
+    // We found the node.
+    if (value === node.value) {
+      animationProducer.addCompleteSequence(
+        ...this._bstAnimationLibrary.highlightNode(node)
+      )
+      return;
+    }
+
+    // Look in the children.
+    animationProducer.addCompleteSequence(
+      ...this._bstAnimationLibrary.halfHighlightNode(node)
+    )
+    if (value < node.value) {
+      animationProducer.addCompleteSequence(
+        ...this._bstAnimationLibrary.highlightLine(node.svgData.leftChildLine)
+      )
+      this.doSearch(node.leftChild, value, animationProducer)
+    } else if (value > node.value) {
+      animationProducer.addCompleteSequence(
+        ...this._bstAnimationLibrary.highlightLine(node.svgData.rightChildLine)
+      )
+      this.doSearch(node.rightChild, value, animationProducer)
+    }
   }
 
 }

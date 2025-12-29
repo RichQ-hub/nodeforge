@@ -10,7 +10,7 @@ class BSTAnimations {
   }
 
   // ==============================================================================
-  // Methods
+  // Node Animations.
   // ==============================================================================
 
   /**
@@ -51,45 +51,29 @@ class BSTAnimations {
     return sequence;
   }
 
-  /**
-   * Sets the correct line endpoints between the node and its child.
-   * @param node 
-   * @param child 
-   * @param line The line connecting the 2 nodes.
-   * @returns 
-   */
-  public plotNodeLine(node: GraphicalTreeNode | null, child: GraphicalTreeNode | null, line: Line): Runner[] {
-    if (node === null || child === null) {
-      return [];
-    }
-    const sequence: Runner[] = [];
-    const lineCoords = getPointerStartEndCoordinates(node.x, node.y, child.x, child.y);
-    sequence.push(line.animate(600).plot(lineCoords));
-    sequence.push(...this.revealLine(line));
-    return sequence;
-  }
-
   public unhighlightBST(root: GraphicalTreeNode | null): Runner[] {
     if (root === null) {
       return [];
     }
     const sequence: Runner[] = [];
-    this.recurseUnlighlightBST(root, sequence);
-    return sequence;
-  }
 
-  private recurseUnlighlightBST(node: GraphicalTreeNode | null, sequence: Runner[]): void {
-    if (node === null) {
-      return;
+    const recurseUnlighlightBST = (curr: GraphicalTreeNode | null) => {
+      if (curr === null) {
+        return;
+      }
+
+      sequence.push(
+        ...this.unhighlightNode(curr),
+        ...this.unhighlightLine(curr.svgData.leftChildLine),
+      ...this.unhighlightLine(curr.svgData.rightChildLine)
+      )
+
+      recurseUnlighlightBST(curr.leftChild);
+      recurseUnlighlightBST(curr.rightChild);
     }
 
-    sequence.push(
-      ...this.unhighlightNode(node),
-      ...this.unhighlightLine(node.svgData.leftChildLine),
-      ...this.unhighlightLine(node.svgData.rightChildLine)
-    );
-    this.recurseUnlighlightBST(node.leftChild, sequence);
-    this.recurseUnlighlightBST(node.rightChild, sequence);
+    recurseUnlighlightBST(root);
+    return sequence;
   }
 
   public freeNode(
@@ -103,6 +87,7 @@ class BSTAnimations {
 
     const sequence: Runner[] = [];
   
+    // If we want to hide the parent line to the child.
     if (parent !== null && hideParentLine) {
       if (parent.leftChild === node) {
         sequence.push(parent.svgData.leftChildLine.animate(600).attr({
@@ -147,7 +132,6 @@ class BSTAnimations {
      * Internal Recursive function.
      * @param curr 
      * @param currDepth 
-     * @returns 
      */
     const doFixBST = (curr: GraphicalTreeNode | null, currDepth: number) => {
       if (curr === null) {
@@ -223,6 +207,10 @@ class BSTAnimations {
     return sequence;
   }
 
+  // ==============================================================================
+  // Line Animations.
+  // ==============================================================================
+
   public revealLine(line: Line): Runner[] {
     const sequence: Runner[] = [];
     
@@ -263,6 +251,24 @@ class BSTAnimations {
     return sequence;
   }
 
+  /**
+   * Sets the correct line endpoints between the node and its child.
+   * @param node 
+   * @param child 
+   * @param line The line connecting the 2 nodes.
+   * @returns 
+   */
+  public plotNodeLine(node: GraphicalTreeNode | null, child: GraphicalTreeNode | null, line: Line): Runner[] {
+    if (node === null || child === null) {
+      return [];
+    }
+    const sequence: Runner[] = [];
+    const lineCoords = getPointerStartEndCoordinates(node.x, node.y, child.x, child.y);
+    sequence.push(line.animate(600).plot(lineCoords));
+    sequence.push(...this.revealLine(line));
+    return sequence;
+  }
+
   // ==============================================================================
   // Getters and Setters.
   // ==============================================================================
@@ -270,10 +276,10 @@ class BSTAnimations {
   public get canvasId(): string {
     return this._canvasId;
   }
+
   public set canvasId(value: string) {
     this._canvasId = value;
   }
-
 }
 
 export default BSTAnimations;

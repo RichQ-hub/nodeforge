@@ -1,4 +1,4 @@
-import { Runner, SVG, Timeline } from "@svgdotjs/svg.js";
+import { Circle, Runner, SVG, Timeline } from "@svgdotjs/svg.js";
 import AnimationProducer from "./common/AnimationProducer";
 import GraphicalDataStructure from "./common/GraphicalDataStructure";
 import GraphicalBST from "./BinarySearchTree/Animation/GraphicalBST";
@@ -9,23 +9,10 @@ class VisualiserController {
   private _timeline: Timeline;
   private _timelineDuration: number;
 
-  /**
-   * FOR TESTING.
-   */
-  private testArr: number[] = [];
-
   public constructor() {
     this._dataStructure = new GraphicalBST();
     this._timeline = new Timeline().persist(true);
     this._timelineDuration = 0;
-  }
-
-  /**
-   * FOR TESTING.
-   */
-  public testUpdate() {
-    this.testArr.push(2);
-    console.log(this.testArr);
   }
 
   // ==============================================================================
@@ -79,6 +66,14 @@ class VisualiserController {
   public clearVisualiserCanvas(): void {
     SVG(VISUALISER_CANVAS_ID).clear();
     this.dataStructure.resetDataStructure();
+    
+    // Redraw the reference point circle.
+    const circ = new Circle().center(500, 40).attr({
+      r: '10',
+      fill: '#f06',
+    });
+
+    circ.addTo(VISUALISER_CANVAS_ID);
   }
 
   // ==============================================================================

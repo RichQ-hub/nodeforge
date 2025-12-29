@@ -1,4 +1,4 @@
-import { Circle, Line, Marker, NumberAlias, Text } from "@svgdotjs/svg.js";
+import { Circle, Line, Text } from "@svgdotjs/svg.js";
 
 export interface SVGData {
   shape: Circle;
