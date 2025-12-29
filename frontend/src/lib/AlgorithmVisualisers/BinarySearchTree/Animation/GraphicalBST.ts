@@ -80,6 +80,24 @@ class GraphicalBST extends GraphicalDataStructure {
       codeSnippet: insertCode,
       run: this.rotateRight.bind(this),
     });
+    this._operations.set('Preorder Traversal', {
+      description: 'Traverses a tree in an NLR path.',
+      args: [],
+      codeSnippet: insertCode,
+      run: this.preorderTraversal.bind(this),
+    });
+    this._operations.set('Inorder Traversal', {
+      description: 'Traverses a tree in an LNR path.',
+      args: [],
+      codeSnippet: insertCode,
+      run: this.inorderTraversal.bind(this),
+    });
+    this._operations.set('Postorder Traversal', {
+      description: 'Traverses a tree in an LRN path.',
+      args: [],
+      codeSnippet: insertCode,
+      run: this.postorderTraversal.bind(this),
+    });
   }
 
   public resetDataStructure(): void {
@@ -145,13 +163,6 @@ class GraphicalBST extends GraphicalDataStructure {
       this._root.x = 500;
       this._root.y = 40;
 
-      // Draw and highlight newly added node.
-      // this.addAnimationWithCodeHighlight(
-      //   animationProducer,
-      //   2,
-      //   this._bstAnimationLibrary.drawNode,
-      //   this._root
-      // );
       animationProducer.addCompleteSequence(
         ...this._bstAnimationLibrary.drawNode(this._root)
       )
@@ -162,14 +173,6 @@ class GraphicalBST extends GraphicalDataStructure {
 
     } else {
       this.doInsert(this._root, value, 0, animationProducer);
-
-      // Unhighlight the entire tree once done.
-      // this.addAnimationWithCodeHighlight(
-      //   animationProducer,
-      //   8,
-      //   this._bstAnimationLibrary.unhighlightBST,
-      //   this._root
-      // );
       animationProducer.addCompleteSequence(
         ...this._bstAnimationLibrary.unhighlightBST(this._root)
       )
@@ -197,19 +200,6 @@ class GraphicalBST extends GraphicalDataStructure {
         ...this._bstAnimationLibrary.unhighlightNode(node)
       )
     } else if (value < node.value) {
-      // this.addAnimationWithCodeHighlight(
-      //   animationProducer,
-      //   4,
-      //   this._bstAnimationLibrary.halfHighlightNode,
-      //   node
-      // );
-
-      // this.addAnimationWithCodeHighlight(
-      //   animationProducer,
-      //   5,
-      //   this._bstAnimationLibrary.highlightLine,
-      //   node.svgData.leftChildLine
-      // );
       animationProducer.addCompleteSequence(
         ...this._bstAnimationLibrary.halfHighlightNode(node)
       )
@@ -228,12 +218,6 @@ class GraphicalBST extends GraphicalDataStructure {
           ...this._bstAnimationLibrary.plotNodeLine(node, node.leftChild, node.svgData.leftChildLine)
         )
 
-        // this.addAnimationWithCodeHighlight(
-        //   animationProducer,
-        //   2,
-        //   this._bstAnimationLibrary.drawNode,
-        //   node.leftChild
-        // );
         animationProducer.addCompleteSequence(
           ...this._bstAnimationLibrary.drawNode(node.leftChild)
         )
@@ -241,19 +225,6 @@ class GraphicalBST extends GraphicalDataStructure {
         this.doInsert(node.leftChild, value, depth + 1, animationProducer);
       }
     } else if (value > node.value) {
-      // this.addAnimationWithCodeHighlight(
-      //   animationProducer,
-      //   6,
-      //   this._bstAnimationLibrary.halfHighlightNode,
-      //   node
-      // );
-
-      // this.addAnimationWithCodeHighlight(
-      //   animationProducer,
-      //   7,
-      //   this._bstAnimationLibrary.highlightLine,
-      //   node.svgData.rightChildLine
-      // );
       animationProducer.addCompleteSequence(
         ...this._bstAnimationLibrary.halfHighlightNode(node)
       )
@@ -272,12 +243,6 @@ class GraphicalBST extends GraphicalDataStructure {
           ...this._bstAnimationLibrary.plotNodeLine(node, node.rightChild, node.svgData.rightChildLine)
         )
 
-        // this.addAnimationWithCodeHighlight(
-        //   animationProducer,
-        //   2,
-        //   this._bstAnimationLibrary.drawNode,
-        //   node.rightChild
-        // );
         animationProducer.addCompleteSequence(
         ...this._bstAnimationLibrary.drawNode(node.rightChild)
       )
@@ -576,6 +541,101 @@ class GraphicalBST extends GraphicalDataStructure {
     }
 
     return curr;
+  }
+
+  public preorderTraversal(): AnimationProducer {
+    const animationProducer = new AnimationProducer();
+    this.doPreorderTraversal(this._root, animationProducer);
+    animationProducer.addCompleteSequence(
+      ...this._bstAnimationLibrary.unhighlightBST(this._root)
+    )
+    return animationProducer;
+  }
+
+  private doPreorderTraversal(curr: GraphicalTreeNode | null, animationProducer: AnimationProducer) {
+    if (curr === null) {
+      return;
+    }
+
+    animationProducer.addCompleteSequence(
+      ...this._bstAnimationLibrary.highlightNode(curr)
+    );
+
+    animationProducer.addCompleteSequence(
+      ...this._bstAnimationLibrary.highlightLine(curr.svgData.leftChildLine)
+    );
+    this.doPreorderTraversal(curr.leftChild, animationProducer);
+    
+    animationProducer.addCompleteSequence(
+      ...this._bstAnimationLibrary.highlightLine(curr.svgData.rightChildLine)
+    );
+    this.doPreorderTraversal(curr.rightChild, animationProducer);
+  }
+
+  public inorderTraversal() {
+    const animationProducer = new AnimationProducer();
+    this.doInorderTraversal(this._root, animationProducer);
+    animationProducer.addCompleteSequence(
+      ...this._bstAnimationLibrary.unhighlightBST(this._root)
+    )
+    return animationProducer;
+  }
+
+  private doInorderTraversal(curr: GraphicalTreeNode | null, animationProducer: AnimationProducer) {
+    if (curr === null) {
+      return;
+    }
+
+    animationProducer.addCompleteSequence(
+      ...this._bstAnimationLibrary.halfHighlightNode(curr)
+    );
+
+    animationProducer.addCompleteSequence(
+      ...this._bstAnimationLibrary.highlightLine(curr.svgData.leftChildLine)
+    );
+    this.doInorderTraversal(curr.leftChild, animationProducer);
+
+    animationProducer.addCompleteSequence(
+      ...this._bstAnimationLibrary.highlightNode(curr)
+    );
+
+    animationProducer.addCompleteSequence(
+      ...this._bstAnimationLibrary.highlightLine(curr.svgData.rightChildLine)
+    );
+    this.doInorderTraversal(curr.rightChild, animationProducer);
+  }
+
+  public postorderTraversal() {
+    const animationProducer = new AnimationProducer();
+    this.doPostorderTraversal(this._root, animationProducer);
+    animationProducer.addCompleteSequence(
+      ...this._bstAnimationLibrary.unhighlightBST(this._root)
+    )
+    return animationProducer;
+  }
+
+  private doPostorderTraversal(curr: GraphicalTreeNode | null, animationProducer: AnimationProducer) {
+    if (curr === null) {
+      return;
+    }
+
+    animationProducer.addCompleteSequence(
+      ...this._bstAnimationLibrary.halfHighlightNode(curr)
+    );
+
+    animationProducer.addCompleteSequence(
+      ...this._bstAnimationLibrary.highlightLine(curr.svgData.leftChildLine)
+    );
+    this.doPostorderTraversal(curr.leftChild, animationProducer);
+
+    animationProducer.addCompleteSequence(
+      ...this._bstAnimationLibrary.highlightLine(curr.svgData.rightChildLine)
+    );
+    this.doPostorderTraversal(curr.rightChild, animationProducer);
+
+    animationProducer.addCompleteSequence(
+      ...this._bstAnimationLibrary.highlightNode(curr)
+    );
   }
 
 }
