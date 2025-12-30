@@ -1,7 +1,8 @@
 import { Runner } from "@svgdotjs/svg.js";
 
 interface AnimationRunner {
-  runners: Runner[];
+  sequence: Runner[];
+  duration: number;
 }
 
 class AnimationProducer {
@@ -29,13 +30,22 @@ class AnimationProducer {
   }
 
   public finishSequence() {
+    const duration = this.getMaxDuration();
     if (this.currentSequence.length > 0) {
       this._animationSequences.push({
-        runners: this.currentSequence
+        sequence: this.currentSequence,
+        duration,
       })
     }
 
     this.currentSequence = [];
+  }
+
+  private getMaxDuration(): number {
+    const maxRunner = this.currentSequence.reduce((prev: Runner, curr: Runner) => {
+      return prev.duration() < curr.duration() ? curr : prev;
+    });
+    return maxRunner.duration();
   }
 
   // ==============================================================================

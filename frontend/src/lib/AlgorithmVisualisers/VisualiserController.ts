@@ -35,16 +35,12 @@ class VisualiserController {
   public constructTimeline(animationProducer: AnimationProducer): void {
     this.finishTimeline();
     animationProducer.animationSequences.forEach((step) => {
-      step.runners.forEach((run) => {
+      step.sequence.forEach((run) => {
         this._timeline.schedule(run, this._timelineDuration + 25, 'absolute');
       })
 
-      const maxRunner = step.runners.reduce((prev: Runner, curr: Runner) => {
-        return prev.duration() < curr.duration() ? curr : prev;
-      })
-
       // Increment the timer for the next step.
-      this._timelineDuration += maxRunner.duration() + 25;
+      this._timelineDuration += step.duration + 25;
     });
 
     // Play timeline.
