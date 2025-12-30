@@ -1,4 +1,3 @@
-import Canvas from "@/components/Canvas";
 import TestCodeCanvas from "@/components/TestCodeCanvas";
 
 export default function Home() {

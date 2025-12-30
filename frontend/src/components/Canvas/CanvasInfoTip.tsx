@@ -38,7 +38,6 @@ const CanvasInfoTip = ({
    */
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      e.preventDefault();
       setMousePos({ x: e.clientX, y: e.clientY });
     }
 

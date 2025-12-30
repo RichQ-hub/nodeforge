@@ -27,7 +27,6 @@ const OperationsTab = () => {
     setInputs(
       Array(controller.dataStructure.getOperationDetails(selectedOperation)?.args.length || 0).fill(0)
     );
-    console.log(`ArgLength = ${inputs.length}`);
   }, [selectedOperation]);
 
   const clearInputs = () => {

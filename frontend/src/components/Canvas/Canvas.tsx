@@ -1,6 +1,5 @@
 'use client';
 
-import { Circle, Rect } from '@svgdotjs/svg.js';
 import { mat3, vec2 } from 'gl-matrix';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import CanvasInfoTip from './CanvasInfoTip';

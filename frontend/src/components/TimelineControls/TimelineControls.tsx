@@ -1,9 +1,33 @@
 'use client';
 
-import { useState } from 'react';
+import VisualiserContext from '@/context/VisualiserContext';
+import { useContext, useEffect, useState } from 'react';
 
 const TimelineControls = () => {
+  const { controller } = useContext(VisualiserContext);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isDraggingTimeline, setIsDraggingTimeline] = useState<boolean>(false);
+  const [timelinePercent, setTimelinePercent] = useState<number>(0);
+
+  useEffect(() => {
+    const update = () => {
+      setTimelinePercent((controller.timeline.time() / controller.timelineDuration) * 100);
+    }
+
+    controller.timeline.on('time', update);
+
+    return () => {
+      controller.timeline.off('time', update);
+    }
+  }, []);
+
+  const handleTimelineUpdate = (percent: number) => {
+    if (isDraggingTimeline) {
+      // controller.seekPercent(percent);
+      setTimelinePercent(percent);
+    }
+  };
+
   return (
     <div className='w-full h-11 bg-nodeforge-box px-4 py-1 flex items-center gap-2 justify-between border-l border-l-white/15'>
       {/* Step back button. */}
@@ -38,7 +62,6 @@ const TimelineControls = () => {
           <svg
             className='w-7 cursor-pointer hover:fill-green-400 fill-white opacity-50 hover:opacity-100'
             viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
           >
             <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
             <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
@@ -57,7 +80,6 @@ const TimelineControls = () => {
             className='w-7 cursor-pointer hover:fill-green-400 fill-white opacity-50 hover:opacity-100'
             viewBox="0 0 24 24"
             fill="none"
-            xmlns="http://www.w3.org/2000/svg"
           >
             <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
             <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
@@ -76,7 +98,6 @@ const TimelineControls = () => {
       >
         <svg
           viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
         >
           <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
           <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
@@ -92,9 +113,29 @@ const TimelineControls = () => {
           </g>
         </svg>
       </button>
+
+      {/* Timeline Slider */}
       <input
-        className='w-full accent-green-400'
+        className='w-full accent-green-400 cursor-pointer z-10 relative pointer-events-auto'
         type='range'
+        id='timeline-slider'
+        min='0'
+        max='100'
+        step='0.01'
+        value={timelinePercent}
+        onChange={(e) => {
+          // e.preventDefault();
+          // handleTimelineUpdate(Number(e.target.value));
+          setTimelinePercent(Number(e.target.value));
+        }}
+        onMouseDown={() => {
+          setIsDraggingTimeline(true);
+          controller.pauseTimeline();
+        }}
+        onMouseUp={(e) => {
+          setIsDraggingTimeline(false);
+          setTimelinePercent(Number(e.currentTarget.value))
+        }}
       />
 
       {/* Speed Control Button */}
@@ -104,7 +145,6 @@ const TimelineControls = () => {
         <svg
           viewBox="0 0 24 24"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg"
         >
           <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
           <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>

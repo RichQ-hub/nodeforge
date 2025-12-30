@@ -34,6 +34,8 @@ class VisualiserController {
 
   public constructTimeline(animationProducer: AnimationProducer): void {
     this.finishTimeline();
+    this.resetTimeline();
+
     animationProducer.animationSequences.forEach((step) => {
       step.sequence.forEach((run) => {
         this._timeline.schedule(run, this._timelineDuration + 25, 'absolute');
@@ -45,6 +47,20 @@ class VisualiserController {
 
     // Play timeline.
     this._timeline.play();
+  }
+
+  public resetTimeline() {
+    this.timeline = new Timeline().persist(true);
+    this.timelineDuration = 0;
+  }
+
+  /**
+   * Sets the progress of the timeline to the given percent.
+   * @param percent Between 0 - 100
+   */
+  public seekPercent(percent: number) {
+    const pos = (percent * this.timelineDuration) / 100;
+    this.timeline.time(pos);
   }
 
   public playTimeline() {
@@ -81,6 +97,20 @@ class VisualiserController {
   }
   public set dataStructure(value: GraphicalDataStructure) {
     this._dataStructure = value;
+  }
+
+  public get timeline(): Timeline {
+    return this._timeline;
+  }
+  public set timeline(value: Timeline) {
+    this._timeline = value;
+  }
+
+  public get timelineDuration(): number {
+    return this._timelineDuration;
+  }
+  public set timelineDuration(value: number) {
+    this._timelineDuration = value;
   }
 }
 
