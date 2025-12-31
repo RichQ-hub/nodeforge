@@ -1,4 +1,4 @@
-import { Circle, Runner, SVG, Timeline } from "@svgdotjs/svg.js";
+import { Circle, SVG, Timeline } from "@svgdotjs/svg.js";
 import AnimationProducer from "./common/AnimationProducer";
 import GraphicalDataStructure from "./common/GraphicalDataStructure";
 import GraphicalBST from "./BinarySearchTree/Animation/GraphicalBST";

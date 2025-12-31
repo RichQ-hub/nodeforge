@@ -1,7 +1,7 @@
 'use client';
 
 import VisualiserContext from '@/context/VisualiserContext';
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 
 const TimelineControls = () => {
   const { controller } = useContext(VisualiserContext);
@@ -19,14 +19,15 @@ const TimelineControls = () => {
     return () => {
       controller.timeline.off('time', update);
     }
-  }, []);
 
-  const handleTimelineUpdate = (percent: number) => {
-    if (isDraggingTimeline) {
-      // controller.seekPercent(percent);
-      setTimelinePercent(percent);
-    }
-  };
+    // IMPORTANT: Everytime we run a new operation, it creates a new timeline. So we have to
+    // reattach a new update() handler everytime that happens.
+  }, [controller.timeline]);
+
+  const handleTimelineUpdate = useCallback((percent: number) => {
+    controller.seekPercent(percent);
+    setTimelinePercent(percent);
+  }, []);
 
   return (
     <div className='w-full h-11 bg-nodeforge-box px-4 py-1 flex items-center gap-2 justify-between border-l border-l-white/15'>
@@ -119,22 +120,15 @@ const TimelineControls = () => {
         className='w-full accent-green-400 cursor-pointer'
         type='range'
         id='timeline-slider'
+        name='timeline-slider'
+        key='timeline-slider'
         min='0'
         max='100'
         step='0.01'
         value={timelinePercent}
         onChange={(e) => {
           e.preventDefault();
-          // handleTimelineUpdate(Number(e.target.value));
-          setTimelinePercent(Number(e.target.value));
-        }}
-        onMouseDown={() => {
-          setIsDraggingTimeline(true);
-          controller.pauseTimeline();
-        }}
-        onMouseUp={(e) => {
-          setIsDraggingTimeline(false);
-          // setTimelinePercent(Number(e.currentTarget.value))
+          handleTimelineUpdate(Number(e.target.value));
         }}
       />
 

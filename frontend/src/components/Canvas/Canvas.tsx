@@ -63,7 +63,7 @@ const Canvas = () => {
     isMouseDown.current = true;
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (!isMouseDown.current || !canvasRef.current) {
       return;
     }
@@ -76,7 +76,7 @@ const Canvas = () => {
 
       return newMatrix;
     });
-  };
+  }, [isMouseDown.current]);
 
   const handleMouseUp = () => {
     isMouseDown.current = false;
