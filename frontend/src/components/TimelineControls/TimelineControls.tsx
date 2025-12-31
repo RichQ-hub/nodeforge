@@ -116,7 +116,7 @@ const TimelineControls = () => {
 
       {/* Timeline Slider */}
       <input
-        className='w-full accent-green-400 cursor-pointer z-10 relative pointer-events-auto'
+        className='w-full accent-green-400 cursor-pointer'
         type='range'
         id='timeline-slider'
         min='0'
@@ -124,7 +124,7 @@ const TimelineControls = () => {
         step='0.01'
         value={timelinePercent}
         onChange={(e) => {
-          // e.preventDefault();
+          e.preventDefault();
           // handleTimelineUpdate(Number(e.target.value));
           setTimelinePercent(Number(e.target.value));
         }}
@@ -134,7 +134,7 @@ const TimelineControls = () => {
         }}
         onMouseUp={(e) => {
           setIsDraggingTimeline(false);
-          setTimelinePercent(Number(e.currentTarget.value))
+          // setTimelinePercent(Number(e.currentTarget.value))
         }}
       />
 

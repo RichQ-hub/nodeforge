@@ -19,7 +19,7 @@ class BSTAnimations {
    * @param x 
    * @param y 
    */
-  public drawNode(node: GraphicalTreeNode | null): Runner[] {
+  public drawNode(node: GraphicalTreeNode | null, depth: number): Runner[] {
     if (node === null) {
       return [];
     }
@@ -31,11 +31,25 @@ class BSTAnimations {
     svgData.leftChildLine.addTo(this.canvasId);
     svgData.rightChildLine.addTo(this.canvasId);
 
-    const x = node.x;
-    const y = node.y;
+    svgData.shape.center(node.x, node.y);
+    svgData.text.center(node.x, node.y);
 
-    svgData.shape.center(x, y);
-    svgData.text.center(x, y);
+    // Sets the line coordinates.
+    const leftCoords = getPointerStartEndCoordinates(
+      node.x,
+      node.y,
+      node.x - GraphicalTreeNode.getChildOffsetX(depth),
+      node.y + GraphicalTreeNode.LINE_OFFSET_Y
+    );
+    svgData.leftChildLine.plot(leftCoords);
+
+    const rightCoords = getPointerStartEndCoordinates(
+      node.x,
+      node.y,
+      node.x + GraphicalTreeNode.getChildOffsetX(depth),
+      node.y + GraphicalTreeNode.LINE_OFFSET_Y
+    );
+    svgData.rightChildLine.plot(rightCoords);
 
     sequence.push(svgData.shape.animate(600).attr({
       opacity: 1
@@ -143,12 +157,12 @@ class BSTAnimations {
 
       // Fix left line.
       sequence.push(
-        ...this.plotNodeLine(curr, curr.leftChild, curr.svgData.leftChildLine)
+        ...this.fixNodeLines(curr, currDepth)
       );
 
       // Fix right line.
       sequence.push(
-        ...this.plotNodeLine(curr, curr.rightChild, curr.svgData.rightChildLine)
+        ...this.fixNodeLines(curr, currDepth)
       );
 
       doFixBST(curr.leftChild, currDepth + 1);
@@ -218,6 +232,8 @@ class BSTAnimations {
       opacity: 1
     }));
 
+    sequence.push(...this.highlightLine(line));
+
     return sequence;
   }
 
@@ -258,14 +274,36 @@ class BSTAnimations {
    * @param line The line connecting the 2 nodes.
    * @returns 
    */
-  public plotNodeLine(node: GraphicalTreeNode | null, child: GraphicalTreeNode | null, line: Line): Runner[] {
+  public moveNodeLine(node: GraphicalTreeNode | null, child: GraphicalTreeNode | null, line: Line): Runner[] {
     if (node === null || child === null) {
       return [];
     }
     const sequence: Runner[] = [];
     const lineCoords = getPointerStartEndCoordinates(node.x, node.y, child.x, child.y);
     sequence.push(line.animate(600).plot(lineCoords));
-    sequence.push(...this.revealLine(line));
+    return sequence;
+  }
+
+  public fixNodeLines(node: GraphicalTreeNode | null, depth: number): Runner[] {
+    if (node === null) {
+      return [];
+    }
+    const sequence: Runner[] = [];
+    const leftCoords = getPointerStartEndCoordinates(
+      node.x,
+      node.y,
+      node.x - GraphicalTreeNode.getChildOffsetX(depth),
+      node.y + GraphicalTreeNode.LINE_OFFSET_Y
+    );
+    sequence.push(node.svgData.leftChildLine.animate(600).plot(leftCoords));
+
+    const rightCoords = getPointerStartEndCoordinates(
+      node.x,
+      node.y,
+      node.x + GraphicalTreeNode.getChildOffsetX(depth),
+      node.y + GraphicalTreeNode.LINE_OFFSET_Y
+    );
+    sequence.push(node.svgData.rightChildLine.animate(600).plot(rightCoords));
     return sequence;
   }
 

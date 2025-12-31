@@ -30,11 +30,10 @@ class AnimationProducer {
   }
 
   public finishSequence() {
-    const duration = this.getMaxDuration();
     if (this.currentSequence.length > 0) {
       this._animationSequences.push({
         sequence: this.currentSequence,
-        duration,
+        duration: this.getMaxDuration(),
       })
     }
 
@@ -44,7 +43,7 @@ class AnimationProducer {
   private getMaxDuration(): number {
     const maxRunner = this.currentSequence.reduce((prev: Runner, curr: Runner) => {
       return prev.duration() < curr.duration() ? curr : prev;
-    });
+    }, this.currentSequence[0]);
     return maxRunner.duration();
   }
 

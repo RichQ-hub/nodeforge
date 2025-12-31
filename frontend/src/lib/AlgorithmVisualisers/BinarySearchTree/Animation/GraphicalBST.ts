@@ -164,7 +164,7 @@ class GraphicalBST extends GraphicalDataStructure {
       this._root.y = 40;
 
       animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.drawNode(this._root)
+        ...this._bstAnimationLibrary.drawNode(this._root, 0)
       )
 
       animationProducer.addCompleteSequence(
@@ -203,9 +203,6 @@ class GraphicalBST extends GraphicalDataStructure {
       animationProducer.addCompleteSequence(
         ...this._bstAnimationLibrary.halfHighlightNode(node)
       )
-      animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.highlightLine(node.svgData.leftChildLine)
-      )
 
       // We can insert.
       if (node.leftChild === null) {
@@ -215,21 +212,21 @@ class GraphicalBST extends GraphicalDataStructure {
         node.leftChild.y = node.y + GraphicalTreeNode.LINE_OFFSET_Y;
 
         animationProducer.addCompleteSequence(
-          ...this._bstAnimationLibrary.plotNodeLine(node, node.leftChild, node.svgData.leftChildLine)
+          ...this._bstAnimationLibrary.revealLine(node.svgData.leftChildLine)
         )
 
         animationProducer.addCompleteSequence(
-          ...this._bstAnimationLibrary.drawNode(node.leftChild)
+          ...this._bstAnimationLibrary.drawNode(node.leftChild, depth + 1)
         )
       } else {
+        animationProducer.addCompleteSequence(
+          ...this._bstAnimationLibrary.highlightLine(node.svgData.leftChildLine)
+        )
         this.doInsert(node.leftChild, value, depth + 1, animationProducer);
       }
     } else if (value > node.value) {
       animationProducer.addCompleteSequence(
         ...this._bstAnimationLibrary.halfHighlightNode(node)
-      )
-      animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.highlightLine(node.svgData.rightChildLine)
       )
 
       // We can insert.
@@ -240,13 +237,16 @@ class GraphicalBST extends GraphicalDataStructure {
         node.rightChild.y = node.y + GraphicalTreeNode.LINE_OFFSET_Y;
 
         animationProducer.addCompleteSequence(
-          ...this._bstAnimationLibrary.plotNodeLine(node, node.rightChild, node.svgData.rightChildLine)
+          ...this._bstAnimationLibrary.revealLine(node.svgData.rightChildLine)
         )
 
         animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.drawNode(node.rightChild)
-      )
+          ...this._bstAnimationLibrary.drawNode(node.rightChild, depth + 1)
+        )
       } else {
+        animationProducer.addCompleteSequence(
+          ...this._bstAnimationLibrary.highlightLine(node.svgData.rightChildLine)
+        )
         this.doInsert(node.rightChild, value, depth + 1, animationProducer);
       }
     }
@@ -341,17 +341,19 @@ class GraphicalBST extends GraphicalDataStructure {
       }
 
       animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.plotNodeLine(parent, curr.rightChild, parent.svgData.leftChildLine)
+        ...this._bstAnimationLibrary.moveNodeLine(parent, curr.rightChild, parent.svgData.leftChildLine)
       );
       curr.rightChild = root2;
       animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.plotNodeLine(curr, root2, curr.svgData.rightChildLine)
-    );
+        ...this._bstAnimationLibrary.revealLine(curr.svgData.rightChildLine),
+        ...this._bstAnimationLibrary.moveNodeLine(curr, root2, curr.svgData.rightChildLine)
+      );
     }
     curr.leftChild = root1;
 
     animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.plotNodeLine(curr, root1, curr.svgData.leftChildLine)
+      ...this._bstAnimationLibrary.revealLine(curr.svgData.leftChildLine),
+      ...this._bstAnimationLibrary.moveNodeLine(curr, root1, curr.svgData.leftChildLine)
     );
     return curr;
   }
@@ -440,11 +442,11 @@ class GraphicalBST extends GraphicalDataStructure {
       }
 
       animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.plotNodeLine(curr, newRoot.leftChild, curr.svgData.rightChildLine)
+        ...this._bstAnimationLibrary.moveNodeLine(curr, newRoot.leftChild, curr.svgData.rightChildLine)
       )
 
       animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.plotNodeLine(newRoot, curr, newRoot.svgData.leftChildLine)
+        ...this._bstAnimationLibrary.moveNodeLine(newRoot, curr, newRoot.svgData.leftChildLine)
       )
 
       newRoot.leftChild = curr;
@@ -511,11 +513,11 @@ class GraphicalBST extends GraphicalDataStructure {
       }
 
       animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.plotNodeLine(curr, newRoot.rightChild, curr.svgData.leftChildLine)
+        ...this._bstAnimationLibrary.moveNodeLine(curr, newRoot.rightChild, curr.svgData.leftChildLine)
       )
 
       animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.plotNodeLine(newRoot, curr, newRoot.svgData.rightChildLine)
+        ...this._bstAnimationLibrary.moveNodeLine(newRoot, curr, newRoot.svgData.rightChildLine)
       )
 
       newRoot.rightChild = curr;
