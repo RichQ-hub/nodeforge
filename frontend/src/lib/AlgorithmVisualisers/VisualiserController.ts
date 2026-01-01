@@ -8,11 +8,13 @@ class VisualiserController {
   private _dataStructure: GraphicalDataStructure;
   private _timeline: Timeline;
   private _timelineDuration: number;
+  private _timestamps: number[];
 
   public constructor() {
     this._dataStructure = new GraphicalBST();
     this._timeline = new Timeline().persist(true);
     this._timelineDuration = 0;
+    this._timestamps = [0];
   }
 
   // ==============================================================================
@@ -43,15 +45,19 @@ class VisualiserController {
 
       // Increment the timer for the next step.
       this._timelineDuration += step.duration + 25;
+
+      // Create a timestamp.
+      this._timestamps.push(this.timelineDuration + 1);
     });
 
     // Play timeline.
-    this._timeline.play();
+    this.playTimeline();
   }
 
   public resetTimeline() {
     this.timeline = new Timeline().persist(true);
     this.timelineDuration = 0;
+    this._timestamps = [0];
   }
 
   /**
@@ -61,6 +67,33 @@ class VisualiserController {
   public seekPercent(percent: number) {
     const pos = (percent * this.timelineDuration) / 100;
     this.timeline.time(pos);
+  }
+
+  public stepForward() {
+    let nextTimestampIdx = -1;
+    for (let i = 0; i < this._timestamps.length; i += 1) {
+      if (this.timeline.time() < this._timestamps[i]) {
+        nextTimestampIdx = i;
+        break;
+      }
+    }
+
+    if (nextTimestampIdx !== -1) {
+      this.timeline.time(this._timestamps[nextTimestampIdx]);
+    }
+  }
+
+  public stepBackward() {
+    let prevTimestampIdx = -1;
+    for (let i = 0; i < this._timestamps.length; i += 1) {
+      if (this.timeline.time() >= this._timestamps[i]) {
+        prevTimestampIdx = i;
+      }
+    }
+
+    if (prevTimestampIdx !== -1) {
+      this.timeline.time(this._timestamps[prevTimestampIdx - 1]);
+    }
   }
 
   public playTimeline() {

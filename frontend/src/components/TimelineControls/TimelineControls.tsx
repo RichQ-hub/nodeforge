@@ -6,12 +6,15 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 const TimelineControls = () => {
   const { controller } = useContext(VisualiserContext);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [isDraggingTimeline, setIsDraggingTimeline] = useState<boolean>(false);
   const [timelinePercent, setTimelinePercent] = useState<number>(0);
 
   useEffect(() => {
     const update = () => {
-      setTimelinePercent((controller.timeline.time() / controller.timelineDuration) * 100);
+      const newPercent = (controller.timeline.time() / controller.timelineDuration) * 100;
+      setTimelinePercent(newPercent);
+      if (newPercent >= 100) {
+        setIsPlaying(false);
+      }
     }
 
     controller.timeline.on('time', update);
@@ -29,12 +32,38 @@ const TimelineControls = () => {
     setTimelinePercent(percent);
   }, []);
 
+  const handleReplay = useCallback(() => {
+    controller.seekPercent(0);
+    handlePlay();
+  }, [controller]);
+
+  const handlePlay = useCallback(() => {
+    controller.playTimeline();
+    setIsPlaying(true);
+  }, [controller]);
+
+  const handlePause = useCallback(() => {
+    controller.pauseTimeline();
+    setIsPlaying(false);
+  }, [controller]);
+
+  const handleStepForward = () => {
+    handlePause();
+    controller.stepForward();
+  }
+
+  const handleStepBackward = () => {
+    handlePause();
+    controller.stepBackward();
+  }
+
   return (
     <div className='w-full h-11 bg-nodeforge-box px-4 py-1 flex items-center gap-2 justify-between border-l border-l-white/15'>
       {/* Step back button. */}
       <button
         className='w-7 rotate-180 opacity-50 hover:opacity-100 cursor-pointer fill-none'
         type='button'
+        onClick={handleStepBackward}
       >
         <svg
           viewBox="0 0 24 24"
@@ -55,39 +84,50 @@ const TimelineControls = () => {
       </button>
 
       {/* Play button. */}
-      {isPlaying ? (
+      {timelinePercent >= 100 ? (
         <button
+          className='w-7 h-7 cursor-pointer hover:fill-green-400 fill-white opacity-50 hover:opacity-100'
           type='button'
-          onClick={() => setIsPlaying(false)}
+          onClick={handleReplay}
         >
           <svg
-            className='w-7 cursor-pointer hover:fill-green-400 fill-white opacity-50 hover:opacity-100'
-            viewBox="0 0 24 24"
+            viewBox="0 0 300.003 300.003" 
           >
             <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
             <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
-            <g id="SVGRepo_iconCarrier">
-              <path fillRule="evenodd" clipRule="evenodd" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM8.07612 8.61732C8 8.80109 8 9.03406 8 9.5V14.5C8 14.9659 8 15.1989 8.07612 15.3827C8.17761 15.6277 8.37229 15.8224 8.61732 15.9239C8.80109 16 9.03406 16 9.5 16C9.96594 16 10.1989 16 10.3827 15.9239C10.6277 15.8224 10.8224 15.6277 10.9239 15.3827C11 15.1989 11 14.9659 11 14.5V9.5C11 9.03406 11 8.80109 10.9239 8.61732C10.8224 8.37229 10.6277 8.17761 10.3827 8.07612C10.1989 8 9.96594 8 9.5 8C9.03406 8 8.80109 8 8.61732 8.07612C8.37229 8.17761 8.17761 8.37229 8.07612 8.61732ZM13.0761 8.61732C13 8.80109 13 9.03406 13 9.5V14.5C13 14.9659 13 15.1989 13.0761 15.3827C13.1776 15.6277 13.3723 15.8224 13.6173 15.9239C13.8011 16 14.0341 16 14.5 16C14.9659 16 15.1989 16 15.3827 15.9239C15.6277 15.8224 15.8224 15.6277 15.9239 15.3827C16 15.1989 16 14.9659 16 14.5V9.5C16 9.03406 16 8.80109 15.9239 8.61732C15.8224 8.37229 15.6277 8.17761 15.3827 8.07612C15.1989 8 14.9659 8 14.5 8C14.0341 8 13.8011 8 13.6173 8.07612C13.3723 8.17761 13.1776 8.37229 13.0761 8.61732Z">
+            <g id="SVGRepo_iconCarrier"> <g> <g>
+              <path d="M150.005,0C67.164,0,0.001,67.159,0.001,150c0,82.838,67.162,150.003,150.003,150.003S300.002,232.838,300.002,150 C300.002,67.159,232.844,0,150.005,0z M230.091,172.444c-9.921,37.083-43.801,64.477-83.969,64.477 c-47.93,0-86.923-38.99-86.923-86.923s38.99-86.92,86.923-86.92c21.906,0,41.931,8.157,57.228,21.579l-13.637,23.623 c-11-11.487-26.468-18.664-43.594-18.664c-33.294,0-60.38,27.088-60.38,60.38c0,33.294,27.085,60.38,60.38,60.38 c25.363,0,47.113-15.728,56.038-37.937h-20.765l36.168-62.636l36.166,62.641H230.091z">
               </path>
-            </g>
+            </g> </g> </g>
           </svg>
+        </button>
+      ) : isPlaying ? (
+        <button
+          className='w-7 h-7 cursor-pointer hover:fill-green-400 fill-white opacity-50 hover:opacity-100'
+          type='button'
+          onClick={handlePause}
+        >
+          <svg
+            viewBox="0 0 300.003 300.003"
+          >
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <path d="M150.001,0c-82.838,0-150,67.159-150,150c0,82.838,67.162,150.003,150,150.003c82.843,0,150-67.165,150-150.003 C300.001,67.159,232.846,0,150.001,0z M134.41,194.538c0,9.498-7.7,17.198-17.198,17.198s-17.198-7.7-17.198-17.198V105.46 c0-9.498,7.7-17.198,17.198-17.198s17.198,7.7,17.198,17.198V194.538z M198.955,194.538c0,9.498-7.701,17.198-17.198,17.198 c-9.498,0-17.198-7.7-17.198-17.198V105.46c0-9.498,7.7-17.198,17.198-17.198s17.198,7.7,17.198,17.198V194.538z"></path> </g> </g> </g>
+          </svg>
+          
         </button>
       ) : (
         <button
+          className='w-7 h-7 cursor-pointer hover:fill-green-400 fill-white opacity-50 hover:opacity-100'
           type='button'
-          onClick={() => setIsPlaying(true)}
+          onClick={handlePlay}
         >
           <svg
-            className='w-7 cursor-pointer hover:fill-green-400 fill-white opacity-50 hover:opacity-100'
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
-            <g id="SVGRepo_iconCarrier">
-              <path fillRule="evenodd" clipRule="evenodd" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM10.6935 15.8458L15.4137 13.059C16.1954 12.5974 16.1954 11.4026 15.4137 10.941L10.6935 8.15419C9.93371 7.70561 9 8.28947 9 9.21316V14.7868C9 15.7105 9.93371 16.2944 10.6935 15.8458Z">
-              </path>
-            </g>
+            viewBox="0 0 300 300" 
+            >
+              <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+              <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+              <g id="SVGRepo_iconCarrier"> <g> <g> <path d="M150,0C67.157,0,0,67.162,0,150c0,82.841,67.157,150,150,150s150-67.159,150-150C300,67.162,232.843,0,150,0z M205.846,158.266l-86.557,49.971c-1.32,0.765-2.799,1.144-4.272,1.144c-1.473,0-2.949-0.379-4.274-1.144 c-2.64-1.525-4.269-4.347-4.269-7.402V100.89c0-3.053,1.631-5.88,4.269-7.402c2.648-1.528,5.906-1.528,8.551,0l86.557,49.974 c2.645,1.53,4.274,4.352,4.269,7.402C210.12,153.916,208.494,156.741,205.846,158.266z"></path> </g> </g> 
+              </g>
           </svg>
         </button>
       )}
@@ -96,6 +136,7 @@ const TimelineControls = () => {
       <button
         className='w-7 opacity-50 hover:opacity-100 cursor-pointer fill-none'
         type='button'
+        onClick={handleStepForward}
       >
         <svg
           viewBox="0 0 24 24"
@@ -128,6 +169,7 @@ const TimelineControls = () => {
         value={timelinePercent}
         onChange={(e) => {
           e.preventDefault();
+          handlePause();
           handleTimelineUpdate(Number(e.target.value));
         }}
       />

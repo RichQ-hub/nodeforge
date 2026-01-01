@@ -118,7 +118,6 @@ const OperationsTab = () => {
 
       {/* Code Snippet */}
       <ContentBox title='Code Snippet' icon={codeIcon}>
-        {/* <pre id='code-canvas' className={`${jetbrains.className} text-xs/loose overflow-x-scroll scrollbar`}>{sampleCodeSnippet}</pre> */}
         <div className='overflow-x-scroll scrollbar'>
           <svg id='code-canvas'></svg>
         </div>
