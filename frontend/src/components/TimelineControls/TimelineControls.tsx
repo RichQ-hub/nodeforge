@@ -47,15 +47,15 @@ const TimelineControls = () => {
     setIsPlaying(false);
   }, [controller]);
 
-  const handleStepForward = () => {
+  const handleStepForward = useCallback(() => {
     handlePause();
     controller.stepForward();
-  }
+  }, [controller]);
 
-  const handleStepBackward = () => {
+  const handleStepBackward = useCallback(() => {
     handlePause();
     controller.stepBackward();
-  }
+  }, [controller]);
 
   return (
     <div className='w-full h-11 bg-nodeforge-box px-4 py-1 flex items-center gap-2 justify-between border-l border-l-white/15'>
