@@ -2,6 +2,7 @@
 
 import VisualiserContext from '@/context/VisualiserContext';
 import { useCallback, useContext, useEffect, useState } from 'react';
+import SpeedBtn from './SpeedBtn';
 
 const TimelineControls = () => {
   const { controller } = useContext(VisualiserContext);
@@ -175,7 +176,7 @@ const TimelineControls = () => {
       />
 
       {/* Speed Control Button */}
-      <button
+      {/* <button
         className='w-8 ml-2 opacity-50 stroke-white cursor-pointer hover:opacity-100'
       >
         <svg
@@ -193,7 +194,8 @@ const TimelineControls = () => {
             ></path>
           </g>
         </svg>
-      </button>
+      </button> */}
+      <SpeedBtn />
     </div>
   )
 }

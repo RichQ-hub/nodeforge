@@ -22,7 +22,7 @@ const SelectOperationBtn = ({
       <Image className='' src={listIcon} alt='' />
 
       {open &&
-        <ul className='absolute top-full left-0 bg-[#242526] z-20 border border-white/15'>
+        <ul className='absolute top-full right-0 w-max bg-[#242526] z-20 border border-white/15'>
           {controller.dataStructure.getOperations().map((operation, idx) => {
             return (
               <li key={idx}>

@@ -9,12 +9,14 @@ class VisualiserController {
   private _timeline: Timeline;
   private _timelineDuration: number;
   private _timestamps: number[];
+  private _speed: number;
 
   public constructor() {
     this._dataStructure = new GraphicalBST();
     this._timeline = new Timeline().persist(true);
     this._timelineDuration = 0;
     this._timestamps = [0];
+    this._speed = 1;
   }
 
   // ==============================================================================
@@ -58,6 +60,7 @@ class VisualiserController {
     this.timeline = new Timeline().persist(true);
     this.timelineDuration = 0;
     this._timestamps = [0];
+    this.timeline.speed(this._speed);
   }
 
   /**
@@ -94,6 +97,15 @@ class VisualiserController {
     if (prevTimestampIdx !== -1) {
       this.timeline.time(this._timestamps[prevTimestampIdx - 1]);
     }
+  }
+
+  public setTimelineSpeed(speed: number) {
+    // We keep an member variable because we want to preserve the speed
+    // between each operation execution. This is because a new timeline is
+    // created each time we run an operation, which resets the speed back
+    // to 1.
+    this._speed = speed;
+    this.timeline.speed(speed);
   }
 
   public playTimeline() {
