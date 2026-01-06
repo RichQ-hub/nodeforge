@@ -1,4 +1,6 @@
 import { Runner } from "@svgdotjs/svg.js";
+import GraphicalCodeLine from "../CodeLine/GraphicalCodeLine";
+import CodeAnimations from "../CodeLine/CodeAnimations";
 
 interface AnimationRunner {
   sequence: Runner[];
@@ -14,7 +16,30 @@ class AnimationProducer {
    */
   private _currentSequence: Runner[] = [];
 
-  public constructor() {}
+  private _codeAnimationLibrary: CodeAnimations;
+  private _codeLines: GraphicalCodeLine[];
+
+  public constructor(codeLines: GraphicalCodeLine[]) {
+    this._codeLines = codeLines;
+    this._codeAnimationLibrary = new CodeAnimations();
+
+    // Whenever a new AnimationProducer is created, we make sure all codelines are
+    // unhighlighted, since previous AnimationProducers could've left some lines
+    // highlighted, and this new producer doesn't have those previous highlighted
+    // lines tracked in the highlightedLines array.
+    this._codeAnimationLibrary.unhighlightCodeLines(codeLines);
+  }
+
+  public addAnimationWithCodeHighlight(
+    lineNum: number,
+    animationFn: any,
+    ...args: any[]
+  ) {
+    this.addCompleteSequence(
+      ...this._codeAnimationLibrary.highlightCode(this.codeLines[lineNum - 1]),
+      ...animationFn(...args),
+    )
+  }
 
   /**
    * Adds a complete sequence of animation runners for a single animation step.
@@ -63,6 +88,13 @@ class AnimationProducer {
   }
   public set currentSequence(value: Runner[]) {
     this._currentSequence = value;
+  }
+
+  public get codeLines(): GraphicalCodeLine[] {
+    return this._codeLines;
+  }
+  public set codeLines(value: GraphicalCodeLine[]) {
+    this._codeLines = value;
   }
 }
 

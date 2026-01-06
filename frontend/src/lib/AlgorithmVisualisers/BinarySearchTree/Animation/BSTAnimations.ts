@@ -2,6 +2,12 @@ import { Line, Runner } from "@svgdotjs/svg.js";
 import GraphicalTreeNode from "../DataStructure/GraphicalTreeNode";
 import { getPointerStartEndCoordinates } from "./helpers";
 
+/**
+ * IMPORTANT: We define member methods as ARROW functions so that the 'this' keyword
+ * is resolved to the context of the class. Hence it can refer to other member
+ * methods. This is not possible with normal functions, as we have to use
+ * '.bind()' so that it can refer to the class context, which it normally can't.
+ */
 class BSTAnimations {
   private _canvasId: string;
 
@@ -19,7 +25,7 @@ class BSTAnimations {
    * @param x 
    * @param y 
    */
-  public drawNode(node: GraphicalTreeNode | null, depth: number): Runner[] {
+  public drawNode = (node: GraphicalTreeNode | null, depth: number): Runner[] => {
     if (node === null) {
       return [];
     }
@@ -65,7 +71,7 @@ class BSTAnimations {
     return sequence;
   }
 
-  public unhighlightBST(root: GraphicalTreeNode | null): Runner[] {
+  public unhighlightBST = (root: GraphicalTreeNode | null): Runner[] => {
     if (root === null) {
       return [];
     }
@@ -90,11 +96,11 @@ class BSTAnimations {
     return sequence;
   }
 
-  public freeNode(
+  public freeNode = (
     node: GraphicalTreeNode | null,
     parent: GraphicalTreeNode | null,
     hideParentLine: boolean = false
-  ): Runner[] {
+  ): Runner[] => {
     if (node === null) {
       return [];
     }
@@ -135,7 +141,7 @@ class BSTAnimations {
    * @param node 
    * @param depth 
    */
-  public fixBST(root: GraphicalTreeNode | null, depth: number): Runner[] {
+  public fixBST = (root: GraphicalTreeNode | null, depth: number): Runner[] => {
     if (root === null) {
       return [];
     }
@@ -174,7 +180,7 @@ class BSTAnimations {
     return sequence;
   }
 
-  public highlightNode(node: GraphicalTreeNode): Runner[] {
+  public highlightNode = (node: GraphicalTreeNode): Runner[] => {
     const sequence: Runner[] = [];
     const svgData = node.svgData;
 
@@ -190,7 +196,7 @@ class BSTAnimations {
     return sequence;
   }
 
-  public halfHighlightNode(node: GraphicalTreeNode): Runner[] {
+  public halfHighlightNode = (node: GraphicalTreeNode): Runner[] => {
     const sequence: Runner[] = [];
     const svgData = node.svgData;
 
@@ -205,7 +211,7 @@ class BSTAnimations {
     return sequence;
   }
 
-  public unhighlightNode(node: GraphicalTreeNode): Runner[] {
+  public unhighlightNode = (node: GraphicalTreeNode): Runner[] => {
     const sequence: Runner[] = [];
     const svgData = node.svgData;
 
@@ -225,7 +231,7 @@ class BSTAnimations {
   // Line Animations.
   // ==============================================================================
 
-  public revealLine(line: Line): Runner[] {
+  public revealLine = (line: Line): Runner[] => {
     const sequence: Runner[] = [];
     
     sequence.push(line.animate(600).attr({
@@ -237,7 +243,7 @@ class BSTAnimations {
     return sequence;
   }
 
-  public hideLine(line: Line): Runner[] {
+  public hideLine = (line: Line): Runner[] => {
     const sequence: Runner[] = [];
     
     sequence.push(line.animate(600).attr({
@@ -247,7 +253,7 @@ class BSTAnimations {
     return sequence;
   }
 
-  public highlightLine(line: Line): Runner[] {
+  public highlightLine = (line: Line): Runner[] => {
     const sequence: Runner[] = [];
 
     sequence.push(line.animate(600).attr({
@@ -257,7 +263,7 @@ class BSTAnimations {
     return sequence;
   }
 
-  public unhighlightLine(line: Line): Runner[] {
+  public unhighlightLine = (line: Line): Runner[] => {
     const sequence: Runner[] = [];
 
     sequence.push(line.animate(600).attr({
@@ -274,7 +280,11 @@ class BSTAnimations {
    * @param line The line connecting the 2 nodes.
    * @returns 
    */
-  public moveNodeLine(node: GraphicalTreeNode | null, child: GraphicalTreeNode | null, line: Line): Runner[] {
+  public moveNodeLine = (
+    node: GraphicalTreeNode | null,
+    child: GraphicalTreeNode | null,
+    line: Line
+  ): Runner[] => {
     if (node === null || child === null) {
       return [];
     }
@@ -284,7 +294,7 @@ class BSTAnimations {
     return sequence;
   }
 
-  public fixNodeLines(node: GraphicalTreeNode | null, depth: number): Runner[] {
+  public fixNodeLines = (node: GraphicalTreeNode | null, depth: number): Runner[] => {
     if (node === null) {
       return [];
     }

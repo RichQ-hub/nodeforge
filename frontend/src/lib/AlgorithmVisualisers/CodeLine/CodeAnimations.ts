@@ -11,8 +11,7 @@ class CodeAnimations {
   public highlightCode(codeTarget: GraphicalCodeLine): Runner[] {
     const sequence: Runner[] = [];
     const svgData = codeTarget.svgData;
-    sequence.push(...this.unhighlightAllCodeLines());
-    this.currHighlightedLines.push(codeTarget);
+    sequence.push(...this.unhighlightCodeLines(this.currHighlightedLines));
 
     sequence.push(svgData.backgroundRect.animate(600).attr({
       opacity: 1
@@ -22,15 +21,17 @@ class CodeAnimations {
       fill: '#000'
     }));
 
+    this.currHighlightedLines.push(codeTarget);
+
     return sequence;
   }
 
-  public unhighlightAllCodeLines(): Runner[] {
+  public unhighlightCodeLines(codeLines: GraphicalCodeLine[]): Runner[] {
     const sequence: Runner[] = [];
-    this.currHighlightedLines.forEach((l) => {
+    codeLines.forEach((l) => {
       sequence.push(...this.unhighlightCode(l))
     });
-    this._currHighlightedLines = [];
+    this.currHighlightedLines = [];
     return sequence;
   }
 

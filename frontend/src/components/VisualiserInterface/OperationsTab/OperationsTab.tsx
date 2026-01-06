@@ -86,7 +86,7 @@ const OperationsTab = () => {
       {/* Operation Inputs Menu */}
       <ContentBox title='Values' icon={optionsIcon}>
         <div className='grid grid-cols-[minmax(100px,max-content)_1fr] gap-3 items-center auto-rows-max'>
-          {inputs.length && controller.dataStructure.getOperationDetails(selectedOperation)?.args.map((arg, idx) => {
+          {inputs.length > 0 ? (controller.dataStructure.getOperationDetails(selectedOperation)?.args.map((arg, idx) => {
             return (
               <React.Fragment key={idx}>
                 <label htmlFor={arg.name}>{arg.name}</label>
@@ -112,7 +112,9 @@ const OperationsTab = () => {
                 />
               </React.Fragment>
             )
-          })}
+          })) : (
+            <p>N/A</p>
+          )}
         </div>
       </ContentBox>
 

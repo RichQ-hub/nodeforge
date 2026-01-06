@@ -1,7 +1,6 @@
 import { SVG } from '@svgdotjs/svg.js';
 import { CODE_CANVAS_ID, OperationUsage } from './constants';
 import GraphicalCodeLine from '../CodeLine/GraphicalCodeLine';
-import CodeAnimations from '../CodeLine/CodeAnimations';
 
 interface IDataStructure {
   execute(command: any, ...args: any[]): any;
@@ -14,11 +13,9 @@ abstract class GraphicalDataStructure implements IDataStructure {
   protected _operations: Map<string, OperationUsage> = new Map();
 
   private _codeLines: GraphicalCodeLine[];
-  protected _codeAnimationLibrary: CodeAnimations;
 
   public constructor() {
     this._codeLines = [];
-    this._codeAnimationLibrary = new CodeAnimations();
   }
 
   public abstract registerOperations(): void;
@@ -42,6 +39,12 @@ abstract class GraphicalDataStructure implements IDataStructure {
     return this._operations.get(operationKey);
   }
 
+  /**
+   * Renders each code line for the selected operation with its own
+   * svg element.
+   * @param operationKey Key used to identify the operation.
+   * @returns 
+   */
   public renderCode(operationKey: string): void {
     this.clearCodeCanvas();
     const operation = this._operations.get(operationKey);
@@ -80,6 +83,9 @@ abstract class GraphicalDataStructure implements IDataStructure {
     });
   }
 
+  /**
+   * Clears only the code, not the visualiser svg's.
+   */
   public clearCodeCanvas(): void {
     this._codeLines = [];
     SVG(CODE_CANVAS_ID).clear();

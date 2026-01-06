@@ -3,6 +3,7 @@
 import VisualiserContext from '@/context/VisualiserContext';
 import { barlow } from '@/lib/fonts';
 import { useCallback, useContext, useState } from 'react';
+import { Tooltip } from 'react-tooltip';
 
 const SPEED_OPTIONS = [
   0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2
@@ -22,6 +23,7 @@ const SpeedBtn = () => {
     <div className={`${barlow.className} font-semibold flex items-center text-white`}>
       <div
         className='relative w-8 ml-2 group stroke-white cursor-pointer'
+        data-tooltip-id='timeline-speed-control'
         onClick={() => {
           setOpen(prev => !prev);
         }}
@@ -62,6 +64,13 @@ const SpeedBtn = () => {
             })}
           </ul>
         }
+
+        <Tooltip
+          className='font-normal'
+          id='timeline-speed-control'
+          place='top'
+          content='Timeline Speed'
+        />
       </div>
       <p className='w-10 ml-2'>{selectedSpeed}x</p>
     </div>

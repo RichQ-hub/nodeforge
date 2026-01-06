@@ -1,3 +1,4 @@
+import { barlow } from '@/lib/fonts';
 import clsx from 'clsx';
 import Image from 'next/image';
 import { Tooltip } from 'react-tooltip';
@@ -43,6 +44,7 @@ const CanvasSidebarIcon = ({
       />
 
       <Tooltip
+        className={`${barlow.className}`}
         id={`tooltip-sidebar-${name}`}
         place='right'
         content={tooltipContent}

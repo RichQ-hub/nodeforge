@@ -1,12 +1,15 @@
+import CodeAnimations from "../../CodeLine/CodeAnimations";
 import AnimationProducer from "../../common/AnimationProducer";
 import { VISUALISER_CANVAS_ID } from "../../common/constants";
 import GraphicalDataStructure from "../../common/GraphicalDataStructure";
 import GraphicalTreeNode from "../DataStructure/GraphicalTreeNode";
 import BSTAnimations from "./BSTAnimations";
-import { deleteCode, insertCode } from "./CodeSnippets";
+import { deleteCode, inorderTraversalCode, insertCode, postorderTraversalCode, preorderTraversalCode, rotateLeftCode, rotateRightCode, searchCode } from "./CodeSnippets";
 
 class GraphicalBST extends GraphicalDataStructure {
   public static MAX_DEPTH = 8;
+  public static ROOT_X = 500;
+  public static ROOT_Y = 40;
   private _bstAnimationLibrary: BSTAnimations;
   private _root: GraphicalTreeNode | null;
 
@@ -53,7 +56,7 @@ class GraphicalBST extends GraphicalDataStructure {
           inputType: 'number',
         }
       ],
-      codeSnippet: insertCode,
+      codeSnippet: searchCode,
       run: this.search.bind(this),
     });
     this._operations.set('Rotate Left', {
@@ -65,7 +68,7 @@ class GraphicalBST extends GraphicalDataStructure {
           inputType: 'number',
         }
       ],
-      codeSnippet: insertCode,
+      codeSnippet: rotateLeftCode,
       run: this.rotateLeft.bind(this),
     });
     this._operations.set('Rotate Right', {
@@ -77,25 +80,25 @@ class GraphicalBST extends GraphicalDataStructure {
           inputType: 'number',
         }
       ],
-      codeSnippet: insertCode,
+      codeSnippet: rotateRightCode,
       run: this.rotateRight.bind(this),
     });
     this._operations.set('Preorder Traversal', {
       description: 'Traverses a tree in an NLR path.',
       args: [],
-      codeSnippet: insertCode,
+      codeSnippet: preorderTraversalCode,
       run: this.preorderTraversal.bind(this),
     });
     this._operations.set('Inorder Traversal', {
       description: 'Traverses a tree in an LNR path.',
       args: [],
-      codeSnippet: insertCode,
+      codeSnippet: inorderTraversalCode,
       run: this.inorderTraversal.bind(this),
     });
     this._operations.set('Postorder Traversal', {
       description: 'Traverses a tree in an LRN path.',
       args: [],
-      codeSnippet: insertCode,
+      codeSnippet: postorderTraversalCode,
       run: this.postorderTraversal.bind(this),
     });
   }
@@ -107,18 +110,6 @@ class GraphicalBST extends GraphicalDataStructure {
   // ==============================================================================
   // Helpers.
   // ==============================================================================
-
-  public addAnimationWithCodeHighlight(
-    animationProducer: AnimationProducer,
-    lineNum: number,
-    animationFn: any,
-    ...args: any[]
-  ) {
-    animationProducer.addCompleteSequence(
-      ...this._codeAnimationLibrary.highlightCode(this.codeLines[lineNum]),
-      ...animationFn.apply(this, ...args),
-    )
-  }
 
   public updateNodePositions(root: GraphicalTreeNode | null): void {
     if (root === null) {
@@ -133,6 +124,7 @@ class GraphicalBST extends GraphicalDataStructure {
       curr.x = newX;
       curr.y = newY;
 
+      // Update left subtree.
       doUpdate(
         curr.leftChild,
         depth + 1,
@@ -140,6 +132,7 @@ class GraphicalBST extends GraphicalDataStructure {
         curr.y + GraphicalTreeNode.LINE_OFFSET_Y
       );
 
+      // Update right subtree.
       doUpdate(
         curr.rightChild,
         depth + 1,
@@ -148,7 +141,9 @@ class GraphicalBST extends GraphicalDataStructure {
       );
     }
 
-    doUpdate(root, 0, root.x, root.y);
+    // Ensures the root coords are static. This is because deleting the root node can
+    // change the root coords.
+    doUpdate(root, 0, GraphicalBST.ROOT_X, GraphicalBST.ROOT_Y);
   }
 
   // ==============================================================================
@@ -156,27 +151,29 @@ class GraphicalBST extends GraphicalDataStructure {
   // ==============================================================================
 
   public insert(value: number): AnimationProducer {
-    const animationProducer = new AnimationProducer();
+    const animationProducer = new AnimationProducer(this.codeLines);
 
     if (this._root === null) {
       this._root = GraphicalTreeNode.createNode(value);
-      this._root.x = 500;
-      this._root.y = 40;
+      this._root.x = GraphicalBST.ROOT_X;
+      this._root.y = GraphicalBST.ROOT_Y;
 
-      animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.drawNode(this._root, 0)
-      )
-
-      animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.unhighlightBST(this._root)
-      )
+      animationProducer.addAnimationWithCodeHighlight(
+        3,
+        this._bstAnimationLibrary.drawNode,
+        this._root,
+        0
+      );
 
     } else {
       this.doInsert(this._root, value, 0, animationProducer);
-      animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.unhighlightBST(this._root)
-      )
     }
+
+    animationProducer.addAnimationWithCodeHighlight(
+      9,
+      this._bstAnimationLibrary.unhighlightBST,
+      this._root
+    );
 
     return animationProducer;
   }
@@ -192,17 +189,17 @@ class GraphicalBST extends GraphicalDataStructure {
       return;
     } else if (value === node.value) {
       // Node already exists, so we end recursion.
-      animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.highlightNode(node)
-      )
-
-      animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.unhighlightNode(node)
-      )
+      animationProducer.addAnimationWithCodeHighlight(
+        9,
+        this._bstAnimationLibrary.highlightNode,
+        node
+      );
     } else if (value < node.value) {
-      animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.halfHighlightNode(node)
-      )
+      animationProducer.addAnimationWithCodeHighlight(
+        5,
+        this._bstAnimationLibrary.halfHighlightNode,
+        node
+      );
 
       // We can insert.
       if (node.leftChild === null) {
@@ -211,23 +208,32 @@ class GraphicalBST extends GraphicalDataStructure {
         node.leftChild.x = node.x - GraphicalTreeNode.getChildOffsetX(depth);
         node.leftChild.y = node.y + GraphicalTreeNode.LINE_OFFSET_Y;
 
-        animationProducer.addCompleteSequence(
-          ...this._bstAnimationLibrary.revealLine(node.svgData.leftChildLine)
-        )
+        animationProducer.addAnimationWithCodeHighlight(
+          2,
+          this._bstAnimationLibrary.revealLine,
+          node.svgData.leftChildLine
+        );
 
-        animationProducer.addCompleteSequence(
-          ...this._bstAnimationLibrary.drawNode(node.leftChild, depth + 1)
-        )
+        animationProducer.addAnimationWithCodeHighlight(
+          3,
+          this._bstAnimationLibrary.drawNode,
+          node.leftChild,
+          depth + 1
+        );
       } else {
-        animationProducer.addCompleteSequence(
-          ...this._bstAnimationLibrary.highlightLine(node.svgData.leftChildLine)
-        )
+        animationProducer.addAnimationWithCodeHighlight(
+          6,
+          this._bstAnimationLibrary.highlightLine,
+          node.svgData.leftChildLine
+        );
         this.doInsert(node.leftChild, value, depth + 1, animationProducer);
       }
     } else if (value > node.value) {
-      animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.halfHighlightNode(node)
-      )
+      animationProducer.addAnimationWithCodeHighlight(
+        7,
+        this._bstAnimationLibrary.halfHighlightNode,
+        node
+      );
 
       // We can insert.
       if (node.rightChild === null) {
@@ -236,35 +242,46 @@ class GraphicalBST extends GraphicalDataStructure {
         node.rightChild.x = node.x + GraphicalTreeNode.getChildOffsetX(depth);
         node.rightChild.y = node.y + GraphicalTreeNode.LINE_OFFSET_Y;
 
-        animationProducer.addCompleteSequence(
-          ...this._bstAnimationLibrary.revealLine(node.svgData.rightChildLine)
-        )
-
-        animationProducer.addCompleteSequence(
-          ...this._bstAnimationLibrary.drawNode(node.rightChild, depth + 1)
-        )
+        animationProducer.addAnimationWithCodeHighlight(
+          2,
+          this._bstAnimationLibrary.revealLine,
+          node.svgData.rightChildLine
+        );
+        animationProducer.addAnimationWithCodeHighlight(
+          3,
+          this._bstAnimationLibrary.drawNode,
+          node.rightChild,
+          depth + 1
+        );
       } else {
-        animationProducer.addCompleteSequence(
-          ...this._bstAnimationLibrary.highlightLine(node.svgData.rightChildLine)
-        )
+        animationProducer.addAnimationWithCodeHighlight(
+          8,
+          this._bstAnimationLibrary.highlightLine,
+          node.svgData.rightChildLine
+        );
         this.doInsert(node.rightChild, value, depth + 1, animationProducer);
       }
     }
   }
 
   public delete(value: number): AnimationProducer {
-    const animationProducer = new AnimationProducer();
+    const animationProducer = new AnimationProducer(this.codeLines);
     this._root = this.doDelete(this._root, null, value, animationProducer);
     // Unhighlight the BST.
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.unhighlightBST(this._root)
+    animationProducer.addAnimationWithCodeHighlight(
+      23,
+      this._bstAnimationLibrary.unhighlightBST,
+      this._root
     );
     // Since the newRoot was assigned a new node (not null), we fix the BST
     // with their new updated coordinates on the canvas.
     this.updateNodePositions(this._root);
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.fixBST(this._root, 0)
-    )
+    animationProducer.addAnimationWithCodeHighlight(
+      23,
+      this._bstAnimationLibrary.fixBST,
+      this._root,
+      0
+    );
     return animationProducer;
   }
 
@@ -278,8 +295,28 @@ class GraphicalBST extends GraphicalDataStructure {
 
     if (root !== null) {
       if (value < root.value) {
+        animationProducer.addAnimationWithCodeHighlight(
+          7,
+          this._bstAnimationLibrary.halfHighlightNode,
+          root
+        );
+        animationProducer.addAnimationWithCodeHighlight(
+          8,
+          this._bstAnimationLibrary.highlightLine,
+          root.svgData.leftChildLine
+        );
         root.leftChild = this.doDelete(root.leftChild, root, value, animationProducer);
       } else if (value > root.value) {
+        animationProducer.addAnimationWithCodeHighlight(
+          9,
+          this._bstAnimationLibrary.halfHighlightNode,
+          root
+        );
+        animationProducer.addAnimationWithCodeHighlight(
+          10,
+          this._bstAnimationLibrary.highlightLine,
+          root.svgData.rightChildLine
+        );
         root.rightChild = this.doDelete(root.rightChild, root, value, animationProducer);
       } else {
         // We found the node we want to delete.
@@ -288,9 +325,13 @@ class GraphicalBST extends GraphicalDataStructure {
           newRoot = null;
 
           // Free the node.
-          animationProducer.addCompleteSequence(
-            ...this._bstAnimationLibrary.freeNode(root, parent, true)
-          )
+          animationProducer.addAnimationWithCodeHighlight(
+            21,
+            this._bstAnimationLibrary.freeNode,
+            root,
+            parent,
+            true
+          );
         } else {
           if (root.leftChild === null) {
             // Case 2: 1 subtree (right)
@@ -304,9 +345,12 @@ class GraphicalBST extends GraphicalDataStructure {
           }
 
           // Free the node.
-          animationProducer.addCompleteSequence(
-            ...this._bstAnimationLibrary.freeNode(root, parent)
-          )
+          animationProducer.addAnimationWithCodeHighlight(
+            21,
+            this._bstAnimationLibrary.freeNode,
+            root,
+            parent
+          );
         }
       }
     }
@@ -359,12 +403,14 @@ class GraphicalBST extends GraphicalDataStructure {
   }
 
   public search(value: number): AnimationProducer {
-    const animationProducer = new AnimationProducer();
+    const animationProducer = new AnimationProducer(this.codeLines);
     this.doSearch(this._root, value, animationProducer);
 
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.unhighlightBST(this._root)
-    )
+    animationProducer.addAnimationWithCodeHighlight(
+      9,
+      this._bstAnimationLibrary.unhighlightBST,
+      this._root
+    );
     return animationProducer;
   }
 
@@ -379,43 +425,61 @@ class GraphicalBST extends GraphicalDataStructure {
     
     // We found the node.
     if (value === node.value) {
-      animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.highlightNode(node)
-      )
+      animationProducer.addAnimationWithCodeHighlight(
+        3,
+        this._bstAnimationLibrary.highlightNode,
+        node
+      );
       return node;
     }
 
     // Look in the children.
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.halfHighlightNode(node)
-    )
     if (value < node.value) {
-      animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.highlightLine(node.svgData.leftChildLine)
-      )
+      animationProducer.addAnimationWithCodeHighlight(
+        5,
+        this._bstAnimationLibrary.halfHighlightNode,
+        node
+      );
+      animationProducer.addAnimationWithCodeHighlight(
+        6,
+        this._bstAnimationLibrary.highlightLine,
+        node.svgData.leftChildLine
+      );
       return this.doSearch(node.leftChild, value, animationProducer)
     } else if (value > node.value) {
-      animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.highlightLine(node.svgData.rightChildLine)
-      )
+      animationProducer.addAnimationWithCodeHighlight(
+        8,
+        this._bstAnimationLibrary.halfHighlightNode,
+        node
+      );
+      animationProducer.addAnimationWithCodeHighlight(
+        8,
+        this._bstAnimationLibrary.highlightLine,
+        node.svgData.rightChildLine
+      );
       return this.doSearch(node.rightChild, value, animationProducer)
     }
     return null;
   }
 
   public rotateLeft(value: number) {
-    const animationProducer = new AnimationProducer();
+    const animationProducer = new AnimationProducer(this.codeLines);
     this._root = this.doRotateLeft(this._root, value, animationProducer);
 
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.unhighlightBST(this._root)
+    animationProducer.addAnimationWithCodeHighlight(
+      16,
+      this._bstAnimationLibrary.unhighlightBST,
+      this._root
     );
     // Since the newRoot was assigned a new node (not null), we fix the BST
     // with their new updated coordinates on the canvas.
     this.updateNodePositions(this._root);
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.fixBST(this._root, 0)
-    )
+    animationProducer.addAnimationWithCodeHighlight(
+      16,
+      this._bstAnimationLibrary.fixBST,
+      this._root,
+      0
+    );
     return animationProducer;
   }
 
@@ -431,9 +495,22 @@ class GraphicalBST extends GraphicalDataStructure {
     if (value === curr.value) {
       // We found the node.
       const newRoot = curr.rightChild;
+
+      // Highlight the curr node and the new root.
+      animationProducer.addAnimationWithCodeHighlight(
+        2,
+        this._bstAnimationLibrary.highlightNode,
+        curr
+      );
       if (newRoot === null) {
         return curr;
       }
+      animationProducer.addAnimationWithCodeHighlight(
+        6,
+        this._bstAnimationLibrary.highlightNode,
+        newRoot
+      );
+      
       curr.rightChild = newRoot.leftChild;
       if (newRoot.leftChild === null) {
         animationProducer.addCompleteSequence(
@@ -441,33 +518,54 @@ class GraphicalBST extends GraphicalDataStructure {
         )
       }
 
-      animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.moveNodeLine(curr, newRoot.leftChild, curr.svgData.rightChildLine)
-      )
+      animationProducer.addAnimationWithCodeHighlight(
+        7,
+        this._bstAnimationLibrary.moveNodeLine,
+        curr,
+        newRoot.leftChild,
+        curr.svgData.rightChildLine
+      );
+
+      animationProducer.addAnimationWithCodeHighlight(
+        8,
+        this._bstAnimationLibrary.moveNodeLine,
+        newRoot,
+        curr,
+        newRoot.svgData.leftChildLine
+      );
 
       animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.moveNodeLine(newRoot, curr, newRoot.svgData.leftChildLine)
+        ...this._bstAnimationLibrary.revealLine(newRoot.svgData.leftChildLine)
       )
 
       newRoot.leftChild = curr;
 
       return newRoot;
     }
-
-    // Highlight the current node.
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.halfHighlightNode(curr)
-    )
     
     if (value < curr.value) {
-      animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.highlightLine(curr.svgData.leftChildLine)
-      )
+      animationProducer.addAnimationWithCodeHighlight(
+        10,
+        this._bstAnimationLibrary.halfHighlightNode,
+        curr
+      );
+      animationProducer.addAnimationWithCodeHighlight(
+        11,
+        this._bstAnimationLibrary.highlightLine,
+        curr.svgData.leftChildLine
+      );
       curr.leftChild = this.doRotateLeft(curr.leftChild, value, animationProducer);
     } else if (value > curr.value) {
-      animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.highlightLine(curr.svgData.rightChildLine)
-      )
+      animationProducer.addAnimationWithCodeHighlight(
+        12,
+        this._bstAnimationLibrary.halfHighlightNode,
+        curr
+      );
+      animationProducer.addAnimationWithCodeHighlight(
+        13,
+        this._bstAnimationLibrary.highlightLine,
+        curr.svgData.rightChildLine
+      );
       curr.rightChild =  this.doRotateLeft(curr.rightChild, value, animationProducer);
     }
 
@@ -475,7 +573,7 @@ class GraphicalBST extends GraphicalDataStructure {
   }
 
   public rotateRight(value: number) {
-    const animationProducer = new AnimationProducer();
+    const animationProducer = new AnimationProducer(this.codeLines);
     this._root = this.doRotateRight(this._root, value, animationProducer);
 
     animationProducer.addCompleteSequence(
@@ -546,7 +644,7 @@ class GraphicalBST extends GraphicalDataStructure {
   }
 
   public preorderTraversal(): AnimationProducer {
-    const animationProducer = new AnimationProducer();
+    const animationProducer = new AnimationProducer(this.codeLines);
     this.doPreorderTraversal(this._root, animationProducer);
     animationProducer.addCompleteSequence(
       ...this._bstAnimationLibrary.unhighlightBST(this._root)
@@ -575,7 +673,7 @@ class GraphicalBST extends GraphicalDataStructure {
   }
 
   public inorderTraversal() {
-    const animationProducer = new AnimationProducer();
+    const animationProducer = new AnimationProducer(this.codeLines);
     this.doInorderTraversal(this._root, animationProducer);
     animationProducer.addCompleteSequence(
       ...this._bstAnimationLibrary.unhighlightBST(this._root)
@@ -608,7 +706,7 @@ class GraphicalBST extends GraphicalDataStructure {
   }
 
   public postorderTraversal() {
-    const animationProducer = new AnimationProducer();
+    const animationProducer = new AnimationProducer(this.codeLines);
     this.doPostorderTraversal(this._root, animationProducer);
     animationProducer.addCompleteSequence(
       ...this._bstAnimationLibrary.unhighlightBST(this._root)
