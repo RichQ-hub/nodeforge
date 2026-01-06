@@ -123,7 +123,6 @@ class VisualiserController {
   public clearVisualiserCanvas(): void {
     SVG(VISUALISER_CANVAS_ID).clear();
     this.dataStructure.resetDataStructure();
-    this.resetTimeline();
     
     // Redraw the reference point circle.
     const circ = new Circle().center(500, 40).attr({

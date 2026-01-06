@@ -1,4 +1,3 @@
-import CodeAnimations from "../../CodeLine/CodeAnimations";
 import AnimationProducer from "../../common/AnimationProducer";
 import { VISUALISER_CANVAS_ID } from "../../common/constants";
 import GraphicalDataStructure from "../../common/GraphicalDataStructure";
@@ -494,7 +493,6 @@ class GraphicalBST extends GraphicalDataStructure {
 
     if (value === curr.value) {
       // We found the node.
-      const newRoot = curr.rightChild;
 
       // Highlight the curr node and the new root.
       animationProducer.addAnimationWithCodeHighlight(
@@ -502,6 +500,8 @@ class GraphicalBST extends GraphicalDataStructure {
         this._bstAnimationLibrary.highlightNode,
         curr
       );
+
+      const newRoot = curr.rightChild;
       if (newRoot === null) {
         return curr;
       }
@@ -576,15 +576,20 @@ class GraphicalBST extends GraphicalDataStructure {
     const animationProducer = new AnimationProducer(this.codeLines);
     this._root = this.doRotateRight(this._root, value, animationProducer);
 
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.unhighlightBST(this._root)
+    animationProducer.addAnimationWithCodeHighlight(
+      16,
+      this._bstAnimationLibrary.unhighlightBST,
+      this._root
     );
     // Since the newRoot was assigned a new node (not null), we fix the BST
     // with their new updated coordinates on the canvas.
     this.updateNodePositions(this._root);
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.fixBST(this._root, 0)
-    )
+    animationProducer.addAnimationWithCodeHighlight(
+      16,
+      this._bstAnimationLibrary.fixBST,
+      this._root,
+      0
+    );
     return animationProducer;
   }
 
@@ -599,10 +604,25 @@ class GraphicalBST extends GraphicalDataStructure {
 
     if (value === curr.value) {
       // We found the node.
+
+      // Highlight the curr node and the new root.
+      animationProducer.addAnimationWithCodeHighlight(
+        2,
+        this._bstAnimationLibrary.highlightNode,
+        curr
+      );
+
       const newRoot = curr.leftChild;
       if (newRoot === null) {
         return curr;
       }
+
+      animationProducer.addAnimationWithCodeHighlight(
+        6,
+        this._bstAnimationLibrary.highlightNode,
+        newRoot
+      );
+
       curr.leftChild = newRoot.rightChild;
       if (newRoot.rightChild === null) {
         animationProducer.addCompleteSequence(
@@ -610,33 +630,55 @@ class GraphicalBST extends GraphicalDataStructure {
         )
       }
 
-      animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.moveNodeLine(curr, newRoot.rightChild, curr.svgData.leftChildLine)
-      )
+      animationProducer.addAnimationWithCodeHighlight(
+        7,
+        this._bstAnimationLibrary.moveNodeLine,
+        curr,
+        newRoot.rightChild,
+        curr.svgData.leftChildLine
+      );
+
+      animationProducer.addAnimationWithCodeHighlight(
+        8,
+        this._bstAnimationLibrary.moveNodeLine,
+        newRoot,
+        curr,
+        newRoot.svgData.rightChildLine
+      );
 
       animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.moveNodeLine(newRoot, curr, newRoot.svgData.rightChildLine)
+        ...this._bstAnimationLibrary.revealLine(newRoot.svgData.rightChildLine)
       )
+
 
       newRoot.rightChild = curr;
 
       return newRoot;
     }
-
-    // Highlight the current node.
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.halfHighlightNode(curr)
-    )
     
     if (value < curr.value) {
-      animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.highlightLine(curr.svgData.leftChildLine)
-      )
+      animationProducer.addAnimationWithCodeHighlight(
+        10,
+        this._bstAnimationLibrary.halfHighlightNode,
+        curr
+      );
+      animationProducer.addAnimationWithCodeHighlight(
+        11,
+        this._bstAnimationLibrary.highlightLine,
+        curr.svgData.leftChildLine
+      );
       curr.leftChild = this.doRotateRight(curr.leftChild, value, animationProducer);
     } else if (value > curr.value) {
-      animationProducer.addCompleteSequence(
-        ...this._bstAnimationLibrary.highlightLine(curr.svgData.rightChildLine)
-      )
+      animationProducer.addAnimationWithCodeHighlight(
+        12,
+        this._bstAnimationLibrary.halfHighlightNode,
+        curr
+      );
+      animationProducer.addAnimationWithCodeHighlight(
+        13,
+        this._bstAnimationLibrary.highlightLine,
+        curr.svgData.rightChildLine
+      );
       curr.rightChild =  this.doRotateRight(curr.rightChild, value, animationProducer);
     }
 
@@ -646,9 +688,11 @@ class GraphicalBST extends GraphicalDataStructure {
   public preorderTraversal(): AnimationProducer {
     const animationProducer = new AnimationProducer(this.codeLines);
     this.doPreorderTraversal(this._root, animationProducer);
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.unhighlightBST(this._root)
-    )
+    animationProducer.addAnimationWithCodeHighlight(
+      9,
+      this._bstAnimationLibrary.unhighlightBST,
+      this._root
+    );
     return animationProducer;
   }
 
@@ -657,27 +701,38 @@ class GraphicalBST extends GraphicalDataStructure {
       return;
     }
 
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.highlightNode(curr)
+    animationProducer.addAnimationWithCodeHighlight(
+      6,
+      this._bstAnimationLibrary.highlightNode,
+      curr
     );
 
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.highlightLine(curr.svgData.leftChildLine)
+    animationProducer.addAnimationWithCodeHighlight(
+      7,
+      this._bstAnimationLibrary.highlightLine,
+      curr.svgData.leftChildLine
     );
+
     this.doPreorderTraversal(curr.leftChild, animationProducer);
     
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.highlightLine(curr.svgData.rightChildLine)
+    animationProducer.addAnimationWithCodeHighlight(
+      8,
+      this._bstAnimationLibrary.highlightLine,
+      curr.svgData.rightChildLine
     );
+
     this.doPreorderTraversal(curr.rightChild, animationProducer);
   }
 
   public inorderTraversal() {
     const animationProducer = new AnimationProducer(this.codeLines);
     this.doInorderTraversal(this._root, animationProducer);
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.unhighlightBST(this._root)
-    )
+
+    animationProducer.addAnimationWithCodeHighlight(
+      9,
+      this._bstAnimationLibrary.unhighlightBST,
+      this._root
+    );
     return animationProducer;
   }
 
@@ -686,21 +741,29 @@ class GraphicalBST extends GraphicalDataStructure {
       return;
     }
 
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.halfHighlightNode(curr)
+    animationProducer.addAnimationWithCodeHighlight(
+      1,
+      this._bstAnimationLibrary.halfHighlightNode,
+      curr
     );
 
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.highlightLine(curr.svgData.leftChildLine)
+    animationProducer.addAnimationWithCodeHighlight(
+      6,
+      this._bstAnimationLibrary.highlightLine,
+      curr.svgData.leftChildLine
     );
     this.doInorderTraversal(curr.leftChild, animationProducer);
 
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.highlightNode(curr)
+    animationProducer.addAnimationWithCodeHighlight(
+      7,
+      this._bstAnimationLibrary.highlightNode,
+      curr
     );
 
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.highlightLine(curr.svgData.rightChildLine)
+    animationProducer.addAnimationWithCodeHighlight(
+      8,
+      this._bstAnimationLibrary.highlightLine,
+      curr.svgData.rightChildLine
     );
     this.doInorderTraversal(curr.rightChild, animationProducer);
   }
@@ -708,9 +771,12 @@ class GraphicalBST extends GraphicalDataStructure {
   public postorderTraversal() {
     const animationProducer = new AnimationProducer(this.codeLines);
     this.doPostorderTraversal(this._root, animationProducer);
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.unhighlightBST(this._root)
-    )
+
+    animationProducer.addAnimationWithCodeHighlight(
+      9,
+      this._bstAnimationLibrary.unhighlightBST,
+      this._root
+    );
     return animationProducer;
   }
 
@@ -719,22 +785,32 @@ class GraphicalBST extends GraphicalDataStructure {
       return;
     }
 
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.halfHighlightNode(curr)
+    animationProducer.addAnimationWithCodeHighlight(
+      1,
+      this._bstAnimationLibrary.halfHighlightNode,
+      curr
     );
 
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.highlightLine(curr.svgData.leftChildLine)
+    animationProducer.addAnimationWithCodeHighlight(
+      6,
+      this._bstAnimationLibrary.highlightLine,
+      curr.svgData.leftChildLine
     );
+
     this.doPostorderTraversal(curr.leftChild, animationProducer);
 
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.highlightLine(curr.svgData.rightChildLine)
+    animationProducer.addAnimationWithCodeHighlight(
+      7,
+      this._bstAnimationLibrary.highlightLine,
+      curr.svgData.rightChildLine
     );
+
     this.doPostorderTraversal(curr.rightChild, animationProducer);
 
-    animationProducer.addCompleteSequence(
-      ...this._bstAnimationLibrary.highlightNode(curr)
+    animationProducer.addAnimationWithCodeHighlight(
+      8,
+      this._bstAnimationLibrary.highlightNode,
+      curr
     );
   }
 
